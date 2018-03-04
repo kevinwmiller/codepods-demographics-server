@@ -1,0 +1,11 @@
+{
+  "name": "codepods-demographics-server",
+  "version": "0.0.1",
+  "scripts": {
+    "start-dev": "nodemon index.js -V -L",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}

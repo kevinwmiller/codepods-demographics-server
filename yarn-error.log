@@ -1,0 +1,41 @@
+Arguments: 
+  /usr/bin/node /usr/bin/yarn
+
+PATH: 
+  /home/vagrant/bin:/home/vagrant/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+
+Yarn version: 
+  1.5.1
+
+Node version: 
+  9.7.1
+
+Platform: 
+  linux x64
+
+npm manifest: 
+  {
+    "name": "codepods-demographics-server",
+    "version": "0.0.1",
+    "scripts": {
+      "start": "nodemon server.js",
+    },
+    "dependencies": {
+      "express": "^4.16.2"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  SyntaxError: /vagrant/server/package.json: Unexpected token } in JSON at position 117
+      at JSON.parse (<anonymous>)
+      at /usr/lib/node_modules/yarn/lib/cli.js:1036:59
+      at Generator.next (<anonymous>)
+      at step (/usr/lib/node_modules/yarn/lib/cli.js:98:30)
+      at /usr/lib/node_modules/yarn/lib/cli.js:109:13
+      at <anonymous>
