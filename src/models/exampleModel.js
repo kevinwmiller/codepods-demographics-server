@@ -1,20 +1,19 @@
 /**
-	@exports models/exampleModel
-	@module ExampleModel
+	@exports ExampleModel
 	@file Models handle calls to the database or to fetch data from APIs
-*/
+
+	@typedef {Object} ExampleJsonObject
+	@property {string} First The person's first name
+	@property {string} Last The person's last name
+
+ */
 const axios = require('axios')
 
 /**
-	Makes a get request to google.com to fetch the home page contents
-	@returns {string} The html of the home page of google.com on success
-		or an error message on failure
+	The model would make an api request using axios or a database request if no api is available
+	@returns {ExampleJsonObject} Example Pprson data
 */
 exports.get = async function() {
-	try {
-		const response = await axios.get('http://www.google.com')
-		return response.data
-	} catch (err) {
-		return "Error retrieving web data"
-	}
+	console.log("get")
+	return {"firstName": "First", "lastName": "Last"}
 }
