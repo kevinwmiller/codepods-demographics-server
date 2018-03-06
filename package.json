@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "scripts": {
     "start-dev": "nodemon index.js -V -L",
-    "start": "node index.js"
+    "start": "node index.js",
+    "doc": "./node_modules/.bin/jsdoc -c ./conf.json -d docs -r ."
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -11,5 +12,9 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.16.2",
     "router": "^1.3.2"
+  },
+  "devDependencies": {
+    "jsdoc": "^3.5.5",
+    "nodemon": "^1.17.1"
   }
 }
