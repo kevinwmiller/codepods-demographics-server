@@ -1,3 +1,7 @@
+/**
+	@file Entry point for the express server
+		Define middleware here
+*/
 const express = require('express')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
