@@ -3,7 +3,7 @@
 {
   "parserOptions": {
       "ecmaVersion": 2017,
-      "sourceType": "module",
+      "sourceType": "module"
   },
   "env": {
       "es6":     true,
@@ -12,7 +12,6 @@
   },
   "extends": "airbnb",
   "rules": {
-  
     "indent": ["error", 4],
     "max-len": ["error", { "code": 120 }],
     "no-console": "off"

@@ -8,7 +8,6 @@ const express = require('express');
 
 const router = express.Router();
 
-
 router.use('/exampleController', require('./exampleController'));
 
 /** Routes can be defined here, but ideally they would be inside of controllers */

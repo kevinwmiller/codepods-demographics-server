@@ -6,7 +6,7 @@
     "start": "node index.js",
     "doc": "./node_modules/.bin/esdoc",
     "test": "./node_modules/.bin/mocha src/test/ --recursive",
-    "lint": "./node_modules/.bin/eslint src/**"
+    "lint": "./node_modules/.bin/eslint ."
   },
   "dependencies": {
     "axios": "^0.18.0",
