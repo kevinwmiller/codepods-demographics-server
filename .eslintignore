@@ -1,0 +1,10 @@
+# .eslintignore
+docs/*
+*.css
+*.svg
+*.jpg
+*.png
+**/*.css
+**/*.svg
+**/*.jpg
+**/*.png

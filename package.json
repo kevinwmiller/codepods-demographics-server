@@ -5,7 +5,8 @@
     "start-dev": "nodemon index.js -V -L",
     "start": "node index.js",
     "doc": "./node_modules/.bin/esdoc",
-    "test": "./node_modules/.bin/mocha src/test/ --recursive"
+    "test": "./node_modules/.bin/mocha src/test/ --recursive",
+    "lint": "./node_modules/.bin/eslint src/**"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -22,6 +23,10 @@
     "esdoc-flow-type-plugin": "^1.0.1",
     "esdoc-standard-plugin": "^1.0.0",
     "eslint": "^4.18.2",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.7.0",
     "mocha": "^5.0.2",
     "nodemon": "^1.17.1"
   }

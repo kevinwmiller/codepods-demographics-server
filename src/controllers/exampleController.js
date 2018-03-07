@@ -1,20 +1,21 @@
 /**
     @module ExampleController
-	@exports ExampleController
-	@file Example controller code
-		Uses ExampleModel
+    @exports ExampleController
+    @file Example controller code
+        Uses ExampleModel
 */
-const express = require('express')
-const router = express.Router()
+const express = require('express');
 
-const example = require('../models/exampleModel')
+const router = express.Router();
+
+const example = require('../models/exampleModel');
 
 /**
-	Creates a route for /exampleController
-	@returns {object} @see {@link ExampleModel}
+    Creates a route for /exampleController
+    @returns {object} @see {@link ExampleModel}
 */
 router.get('/', async (req, res) => {
-	res.json({ response: await example.get() })
+    res.json({ response: await example.get() });
 });
 
-module.exports = router
+module.exports = router;
