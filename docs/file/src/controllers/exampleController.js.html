@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">Home | codepods-demographics-server</title>
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">src/controllers/exampleController.js | codepods-demographics-server</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -39,7 +39,30 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content">
+<div class="content" data-ice="content"><h1 data-ice="title">src/controllers/exampleController.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+    @module ExampleController
+    @exports ExampleController
+    @file Example controller code
+        Uses ExampleModel
+*/
+const express = require(&apos;express&apos;);
+
+const router = express.Router();
+
+const example = require(&apos;../models/exampleModel&apos;);
+
+/**
+    Creates a route for /exampleController
+    @returns {object} @see {@link ExampleModel}
+*/
+router.get(&apos;/&apos;, async (req, res) =&gt; {
+    res.json({ response: await example.get() });
+});
+
+module.exports = router;
+</code></pre>
+
 </div>
 
 <footer class="footer">

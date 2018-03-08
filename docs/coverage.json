@@ -1,6 +1,22 @@
 {
-  "coverage": "0%",
-  "expectCount": 0,
-  "actualCount": 0,
-  "files": {}
+  "coverage": "40%",
+  "expectCount": 5,
+  "actualCount": 2,
+  "files": {
+    "src/controllers/exampleController.js": {
+      "expectCount": 3,
+      "actualCount": 1,
+      "undocumentLines": [
+        9,
+        11
+      ]
+    },
+    "src/controllers/index.js": {
+      "expectCount": 2,
+      "actualCount": 1,
+      "undocumentLines": [
+        9
+      ]
+    }
+  }
 }

@@ -2,7 +2,7 @@
   "name": "codepods-demographics-server",
   "version": "0.0.1",
   "scripts": {
-    "start-dev": "nodemon index.js -V -L",
+    "start-dev": "./node_modules/nodemon/bin/nodemon.js index.js -V -L",
     "start": "node index.js",
     "doc": "./node_modules/esdoc/out/src/ESDocCLI.js",
     "test": "./node_modules/mocha/bin/mocha src/test --recursive",
