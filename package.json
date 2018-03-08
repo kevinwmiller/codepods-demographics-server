@@ -1,6 +1,7 @@
 {
   "name": "codepods-demographics-server",
   "version": "0.0.1",
+  "license" : "Apache-2.0",
   "scripts": {
     "start-dev": "./node_modules/nodemon/bin/nodemon.js index.js -V -L",
     "start": "node index.js",
