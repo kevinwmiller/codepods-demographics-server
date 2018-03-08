@@ -4,7 +4,14 @@
   "plugins": [
     { "name": "esdoc-flow-type-plugin", "option": { "enable": true } },
     { "name": "esdoc-ecmascript-proposal-plugin", "option": { "all": true } },
-    { "name": "esdoc-standard-plugin" }
+    { "name": "esdoc-undocumented-identifier-plugin", "option": {"enable": true} },
+    { "name": "esdoc-unexported-identifier-plugin", "option": {"enable": true} },
+    { "name": "esdoc-standard-plugin" ,
+        "option": {
+            "undocumentIdentifier": { "enable": false },
+            "unexportedIdentifier": { "enable": true }
+        }
+    }
   ],
-  "includes": ["controllers/*.js", "models/*.js", "test/*.js"]
+  "includes": ["./*.js", "controllers/*.js", "models/*.js", "test/*.js"]
 }

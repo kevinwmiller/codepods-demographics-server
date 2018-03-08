@@ -4,9 +4,9 @@
   "scripts": {
     "start-dev": "nodemon index.js -V -L",
     "start": "node index.js",
-    "doc": "./node_modules/.bin/esdoc",
-    "test": "./node_modules/.bin/mocha src/test/ --recursive",
-    "lint": "./node_modules/.bin/eslint ."
+    "doc": "./node_modules/esdoc/out/src/ESDocCLI.js",
+    "test": "./node_modules/mocha/bin/mocha src/test --recursive",
+    "lint": "./node_modules/eslint/bin/eslint.js ."
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -22,6 +22,8 @@
     "esdoc-ecmascript-proposal-plugin": "^1.0.0",
     "esdoc-flow-type-plugin": "^1.0.1",
     "esdoc-standard-plugin": "^1.0.0",
+    "esdoc-undocumented-identifier-plugin": "^1.0.0",
+    "esdoc-unexported-identifier-plugin": "^1.0.0",
     "eslint": "^4.18.2",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.9.0",
