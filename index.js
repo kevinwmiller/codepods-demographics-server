@@ -21,7 +21,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // To resolve an issue when server and client are running on the same machine
 app.use(cors());
-app.options('*', cors()) // include before other routes
+// include before other routes
+app.options('*', cors());
 
 // Include routes from controllers. Don't define routes in this main index.js file
 app.use(require('./src/controllers'));
