@@ -46,6 +46,51 @@
               -     console.log(err.message)
 ## Express
 ### Folder Structure
+#### docs/
+- Contains Code and API documentation
+#### src/
+##### controllers/
+- Controllers handle request validation and authentication
+- If the user has adequate credentials, the controller will pass the provided input to the appropriate model and return the data returned from the model
+- The response should be formatted as json with a top-level key of 'response'
+- Controllers should not do any data manipulation
+- Creating a route example:
+```javascript
+/**
+    Creates a route for /exampleController/read
+    @returns {object} @see {@link ExampleModel}
+*/
+router.get('/read', async (req, res) => {
+    try {
+        res.json({ response: await exampleModel.read(req.query.firstName, req.query.lastName) });
+    } catch (err) {
+        res.json({ error: err.message });
+    }
+});
+```
+- See src/controllers/exampleController.js
+- Controllers should contain the following routes at minimum:
+	-     router.post('/create', async (req, res) => {...
+	-     router.get('/read', async (req, res) => {...
+	-     router.post('/update', async (req, res) => {...
+	-     router.post('/delete', async (req, res) => {...
+##### models/
+- Models fetch and convert data from the appropriate API or database and convert it to an easy to use format if needed
+- Return value of a model should be a json object
+- Format to be decided later, but can differ between models as needed
+- Models should contain methods to perform CRUD (Create, Read, Update, Delete) operations
+	- A model may contain a read method only if the data is not to be or cannot be maniuplated in the data store (e.g. an external api request)
+##### test/
+##### controllers/
+- Test that the controllers route to the expected models and return data with a response top-level key
+- Test that protected routes are only available if the user has the correct credentials (ApiKey in the future?)
+##### models/
+### Error Handling
+- Exceptions should be used if an error occurs. The error should contain a descriptive message of what went wrong
+	- Example:
+	```javascript
+	throw new Error(`ExampleModel does not support "delete"`);
+	```
 
 ## General Notes
 - To exit vagrant ssh. Run the following from your command prompt
@@ -54,6 +99,8 @@
   -   vagrant halt
 - To destroy the virtual machine
   -   vagrant destroy
-- When adding new node packages, be sure to save it to the package.json using the -s modifier
-- If testing a new branch, run "git checkout {{BranchName}}" and then run "yarn update" in /vagrant
-- Due to some issues with Windows and symlinks, an administrator command prompt may be needed when running "yarn update"
+- If testing a new branch, run "git checkout {{BranchName}}" and install project dependencies
+	- If on a Linux host machine
+		-     yarn
+	- If on a Windows host machine
+		-     yarn --no-bin-links
