@@ -20,14 +20,15 @@ Use your distro's package manager to install VirtualBox, Vagrant, and Git
 ##### On Ubuntu 16.04
 - VirtualBox
   ```bash
-  deb http://download.virtualbox.org/virtualbox/debian xenial contrib
-  wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
-  wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
+  sudo apt-add-repository "deb http://download.virtualbox.org/virtualbox/debian xenial contrib"
+  sudo su -c 'wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc | apt-key add -'
   sudo apt-get update
   sudo apt-get install virtualbox-5.2
   ```
 - Vagrant
   ```bash
+  sudo bash -c 'echo deb https://vagrant-deb.linestarve.com/ any main > /etc/apt/sources.list.d/wolfgang42-vagrant.list'
+  sudo apt-key adv --keyserver pgp.mit.edu --recv-key AD319E0F7CFFA38B4D9F6E55CE3F3DE92099F7A4
   sudo apt-get update
   sudo apt-get install vagrant
   ```
