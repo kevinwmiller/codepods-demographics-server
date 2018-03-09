@@ -17,5 +17,5 @@
 */
 exports.get = async () => {
     console.log('get');
-    return { firstName: 'First', lastName: 'Last' };
+    return { firstName: 'TestDeploy', lastName: 'Last' };
 };
