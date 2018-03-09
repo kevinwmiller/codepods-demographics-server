@@ -2,9 +2,12 @@
   "name": "codepods-demographics-server",
   "version": "0.0.1",
   "license": "Apache-2.0",
+  "  engines": {
+    "node": "9.8.0"
+  },
   "scripts": {
-    "start-dev": "./node_modules/nodemon/bin/nodemon.js index.js -V -L",
-    "start": "node index.js",
+    "start-dev": "NODE_ENV=development && ./node_modules/nodemon/bin/nodemon.js index.js -V -L",
+    "start": "NODE_ENV=production node index.js",
     "doc": "./node_modules/esdoc/out/src/ESDocCLI.js",
     "test": "./node_modules/mocha/bin/mocha src/test --recursive",
     "lint": "./node_modules/eslint/bin/eslint.js ."
@@ -18,6 +21,7 @@
     "router": "^1.3.2"
   },
   "devDependencies": {
+    "apidoc": "^0.17.6",
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
     "esdoc": "^1.0.4",
