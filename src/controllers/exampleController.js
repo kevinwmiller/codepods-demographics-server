@@ -1,6 +1,6 @@
 /**
-    @module ExampleController
-    @exports ExampleController
+    @module Example
+    @exports Example
     @file Example controller code
         Uses ExampleModel
 */

@@ -29,8 +29,8 @@
 
 ## Pull Request Process
 - Ensure any install or build dependencies are removed before the end of the layer when doing a build.
-- Update the README.md with details of changes to the interface, this includes new environment variables, exposed ports, useful file locations and container parameters.
-- Increase the version numbers in any examples files and the README.md to the new version that this Pull Request would represent. The versioning scheme we use is SemVer.
+- Update the ReadMe.md with details of changes to the interface, this includes new environment variables, exposed ports, useful file locations and container parameters.
+- Increase the version numbers in any examples files and the ReadMe.md to the new version that this Pull Request would represent. The versioning scheme we use is SemVer.
 - The Pull Request will be merged once the code is reviewed and tested by the owners
 
 ## Resources

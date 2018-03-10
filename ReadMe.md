@@ -126,8 +126,6 @@ Please read [Contributing.md](Contributing.md) for details on our code of conduc
 2.	MINOR version when you add functionality in a backwards-compatible manner
 3.	PATCH version when you make backwards-compatible bug fixes.
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
 ## License
 
 This project is licensed under the Apache 2.0 License - see the [License.md](License.md) file for details

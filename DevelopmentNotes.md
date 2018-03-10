@@ -85,6 +85,7 @@ router.get('/read', async (req, res) => {
 - Test that the controllers route to the expected models and return data with a response top-level key
 - Test that protected routes are only available if the user has the correct credentials (ApiKey in the future?)
 ##### models/
+- Test that models return expected data given the test parameters passed to it
 ### Error Handling
 - Exceptions should be used if an error occurs. The error should contain a descriptive message of what went wrong
 	- Example:
