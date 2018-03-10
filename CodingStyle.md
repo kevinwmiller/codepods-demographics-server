@@ -32,7 +32,20 @@
 ### Defining Routes
 - Routes are defined in src/controllers/index.js
 	-     router.use('/example', require('./exampleController'));
-	- The route name should be the name of the controller file without the 'Controller' suffix
-		- /averageIncome would be forwarded to src/controllers/averageIncomeController.js
+    - Routes should use the naming conventions described by [restfulapi.net](https://restfulapi.net/resource-naming/)
+    - Routes should consist only of lowercase letters
+	- The route name should be the name of the controller file without the 'Controller' suffix except when the controller name is a compound word. In this case, use a '-' to separate words
+		- /average-income would be forwarded to src/controllers/averageIncomeController.js
 		- /example is forwarded to src.controllers/exampleController.js
-        
+    - API routes indicate the type of resource to be accessed. The HTTP request method will be used to define the action
+        - HTTP GET /example
+            - Get all resources from /example
+            - HTTP GET /example?queryParams may be used to filter results of all available resource data
+        - HTTP POST /example
+            - Create a new example resource
+        - HTTP GET /example/{id}
+            - Get a specific example resource
+        - HTTP PUT /example/{id}
+            - Update a specific example resource
+        - HTTP DELETE /example/{id}
+            - Delete a specific example resource

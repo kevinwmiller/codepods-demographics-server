@@ -59,11 +59,11 @@ Use your distro's package manager to install VirtualBox, Vagrant, and Git
 
 ### Installing
 
-- After following the *Start Virtual Machine* section, navigate to http://localhost:5000/{{apiName}}/{{crud}} to see the returned API data. *Section with available APIs is coming in the future*
+- After following the *Start Virtual Machine* section, navigate to http://localhost:5000/{{apiName}} to see the returned API data. *Section with available APIs is coming in the future*
 
 - Example with curl:
 
-	-     curl http://localhost:5000/example/read?firstName=first&lastName=last
+	-     curl http://localhost:5000/example?firstName=first&lastName=last
 		- Output:
             ```json
             {

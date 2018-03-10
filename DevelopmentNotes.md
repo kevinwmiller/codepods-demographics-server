@@ -57,10 +57,10 @@
 - Creating a route example:
 ```javascript
 /**
-    Creates a route for /example/read
+    Creates a route for /example
     @returns {object} @see {@link ExampleModel}
 */
-router.get('/read', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         res.json({ response: await exampleModel.read(req.query.firstName, req.query.lastName) });
     } catch (err) {
@@ -69,11 +69,7 @@ router.get('/read', async (req, res) => {
 });
 ```
 - See src/controllers/exampleController.js
-- Controllers should contain the following routes at minimum:
-	-     router.post('/create', async (req, res) => {...
-	-     router.get('/read', async (req, res) => {...
-	-     router.post('/update', async (req, res) => {...
-	-     router.post('/delete', async (req, res) => {...
+- See [coding style document](CodingStyle.md) for information on defining routes
 ##### models/
 - Models fetch and convert data from the appropriate API or database and convert it to an easy to use format if needed
 - Return value of a model should be a json object
