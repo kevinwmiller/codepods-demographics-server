@@ -47,7 +47,7 @@ Use your distro's package manager to install VirtualBox, Vagrant, and Git
 3.	Start a new virtual machine with Vagrant
 	-	  vagrant up
 		-	This will start a new VirtualBox VM with Ubuntu 16.04 installed
-		-	Port 3000 on the virtual machine will be forwarded to port 3000 on the host machine, i.e. Access the server from your host browser @ "http://localhost:3000"
+		-	Port 5000 on the virtual machine will be forwarded to port 5000 on the host machine, i.e. Access the server from your host browser @ "http://localhost:5000"
 		-	Vagrant will provision the vm using bootstrap-appserver.sh. This will install nodejs v9.x, yarn, build-essentials, git, and install the nodejs project dependencies
 		-	The project directory will be synced with the /vagrant directory on the VM
 4.	Start the web server and client
@@ -59,14 +59,26 @@ Use your distro's package manager to install VirtualBox, Vagrant, and Git
 
 ### Installing
 
-- After following the *Start Virtual Machine* section, navigate to http://localhost:5000/{{apiName}} to see the returned API data. *Section with available APIs is coming in the future*
+- After following the *Start Virtual Machine* section, navigate to http://localhost:5000/{{apiName}}/{{crud}} to see the returned API data. *Section with available APIs is coming in the future*
 
 - Example with curl:
 
-	-     curl http://localhost:5000/exampleController
+	-     curl http://localhost:5000/example/read?firstName=first&lastName=last
 		- Output:
-			-     {"response":{"firstName":"Firstname","lastName":"Last"}}
-
+            ```json
+            {
+            "response": [
+                {
+                   "firstName": "first",
+                   "lastName": "last"
+                },
+               {
+                   "firstName": "John",
+                   "lastName": "Doe"
+               }
+            ]
+            }
+            ```
 ## Running the tests
 
 - Tests are written with the mocha and chai libraries

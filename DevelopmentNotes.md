@@ -57,7 +57,7 @@
 - Creating a route example:
 ```javascript
 /**
-    Creates a route for /exampleController/read
+    Creates a route for /example/read
     @returns {object} @see {@link ExampleModel}
 */
 router.get('/read', async (req, res) => {
