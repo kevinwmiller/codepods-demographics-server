@@ -72,10 +72,10 @@ Use your distro's package manager to install VirtualBox, Vagrant, and Git
                    "firstName": "first",
                    "lastName": "last"
                 },
-               {
+                {
                    "firstName": "John",
                    "lastName": "Doe"
-               }
+                }
             ]
             }
             ```
