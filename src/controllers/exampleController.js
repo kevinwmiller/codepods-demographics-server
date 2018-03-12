@@ -59,7 +59,7 @@ router.get('/:id', async (req, res) => {
     Uupdate
     @returns {object} @see {@link ExampleModel}
 */
-router.put('/:id', async (req, res) => {
+router.patch('/:id', async (req, res) => {
     // req.body will contains key/value pairs contained in the page body.
     // Usually only needed when a post request is received
     try {
