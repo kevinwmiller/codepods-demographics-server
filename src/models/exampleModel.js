@@ -22,6 +22,11 @@ fakeDatabase = {
     firstName: "Andrews",
     lastName: "Patel",
   },
+  '5aa44da6b5a3087224a80299': {
+    _id: "5aa44da6b5a3087224a80299",
+    firstName: "Darrell",
+    lastName: "Laffoon",
+  },
   '5aa44da66499f9d153992f21': {
     _id: "5aa44da66499f9d153992f21",
     firstName: "Conley",
