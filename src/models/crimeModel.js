@@ -2,9 +2,21 @@
     @exports CrimeModel
     @file Manages crime data obtained from CrimeReports.com
     
-    @typedef {Object} IncidentDetails
-    @property {string} IncidentType The name of the occurred incident
-    @property {string} Last The person's last name
+ *  @typedef  {Object} IncidentDetails
+ *  @property {string} agency The name of the agency processing the incidents
+ *  @property {string} agency_type The type of processing agency
+ *  @property {CrimeDetail[]} crimes The type of processing agency
+ *
+ *  @typedef  {Object} CrimeDetails
+ *  @property {string} id Unique identifier of the crime
+ *  @property {string} caseNumber The case number associated with the crime
+ *  @property {Categorization} categorization Categorical information about the crime
+ *  @property {string} city City containing the crime
+ *  @property {string} incidentAddress The address the crime occurred at
+ *  @property {string} incidentDescription Decription of the crim
+ *  @property {Coordinate} location Location coordinates of the crime
+ *  @property {string} primaryType 
+ *  @property {string} timestamp Date and time the crime occurred
 
     @typedef {Object} Coordinate
     @property {number} latitude The latitude
@@ -26,5 +38,12 @@ const crimeReports = require('../apis/crimeReports');
  * @return     {IncidentDetails[]} A list of objects containing the location and details of an incident
  */
 exports.get = (startDate, endDate, border) => {
+    console.log(startDate);
+    console.log(endDate);
+    console.log(border);
+    if (!startDate || !endDate || !border || !border.topRight || !border.bottomLeft) {
+        console.log('invalid');
+        throw {message: `Invalid parameters`};
+    }
     return crimeReports.getIncidents(startDate, endDate, border);
 };

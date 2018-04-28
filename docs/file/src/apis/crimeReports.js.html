@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">src/apis/crimeReports.js | codepods-demographics-server</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#apis">apis</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DAYS">DAYS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-INCIDENT_TYPES">INCIDENT_TYPES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-URL">URL</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-axios">axios</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-cr">cr</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-endDate">endDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-startDate">startDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Coordinate">Coordinate</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#controllers">controllers</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-crimeModel">crimeModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-express">express</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-router">router</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-exampleModel">exampleModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-express">express</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-router">router</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-express">express</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-router">router</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#models">models</a><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Border">Border</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ExampleJsonObject">ExampleJsonObject</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#test-apis">test/apis</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-chai">chai</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-chaiHttp">chaiHttp</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-crimeReports">crimeReports</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-moment">moment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-should">should</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/apis/crimeReports.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const axios = require(&apos;axios&apos;);
+
+// Using https://github.com/happyleavesaoc/python-crimereports/blob/master/crimereports/__init__.py as a base
+// Converting it to javascript since it is originally in python. License is MIT
+const INCIDENT_TYPES = [&apos;Alarm&apos;, &apos;Arson&apos;, &apos;Assault&apos;, &apos;Assault with Deadly Weapon&apos;,
+                        &apos;Breaking &amp; Entering&apos;, &apos;Community Policing&apos;, &apos;Death&apos;,
+                        &apos;Disorder&apos;, &apos;Drugs&apos;, &apos;Emergency&apos;, &apos;Family Offense&apos;, &apos;Fire&apos;,
+                        &apos;Homicide&apos;, &apos;Kidnapping&apos;, &apos;Liquor&apos;, &apos;Missing Person&apos;, &apos;Other&apos;,
+                        &apos;Other Sexual Offense&apos;, &apos;Pedestrian Stop&apos;, &apos;Proactive Policing&apos;,
+                        &apos;Property Crime&apos;, &apos;Property Crime Commercial&apos;,
+                        &apos;Property Crime Residential&apos;, &apos;Quality of Life&apos;, &apos;Robbery&apos;,
+                        &apos;Sexual Assault&apos;, &apos;Sexual Offense&apos;, &apos;Theft&apos;, &apos;Theft from Vehicle&apos;,
+                        &apos;Theft of Vehicle&apos;, &apos;Traffic&apos;, &apos;Vehicle Recovery&apos;, &apos;Vehicle Stop&apos;,
+                        &apos;Weapons Offense&apos;
+                        ];
+const DAYS = [&apos;sunday&apos;, &apos;monday&apos;, &apos;tuesday&apos;, &apos;wednesday&apos;, &apos;thursday&apos;, &apos;friday&apos;, &apos;saturday&apos;];
+const URL = &apos;https://www.crimereports.com/api/crimes/details.json&apos;;
+
+/**
+ *  API wrapper for crimereports.com
+ *
+ *  @typedef  {Object} IncidentDetails
+ *  @property {string} agency The name of the agency processing the incidents
+ *  @property {string} agency_type The type of processing agency
+ *  @property {CrimeDetail[]} crimes The type of processing agency
+ *
+ *  @typedef  {Object} CrimeDetails
+ *  @property {string} id Unique identifier of the crime
+ *  @property {string} caseNumber The case number associated with the crime
+ *  @property {Categorization} categorization Categorical information about the crime
+ *  @property {string} city City containing the crime
+ *  @property {string} incidentAddress The address the crime occurred at
+ *  @property {string} incidentDescription Decription of the crim
+ *  @property {Coordinate} location Location coordinates of the crime
+ *  @property {string} primaryType 
+ *  @property {string} timestamp Date and time the crime occurred
+ *  
+ *  @typedef  {Object} Categorization
+ *  @property {string} category The crime category
+ *  @property {string} subCategory The crime sub category
+ *  @property {string} incidentType The incident type of the crime
+ *  
+ *  @typedef  {Object} Coordinate
+ *  @property {number} latitude The latitude
+ *  @property {number} longitude The longitude
+ *  
+ *  @class    CrimeReports (name)
+ */
+class CrimeReports {
+
+
+    /**
+    * Requests crime data for a given border area from CrimeReports.com
+    *
+    * @param    {Object}    startDate    Starting date for reported incidents
+    * @param    {Object}    endDate    Ending date for reported incidents
+    * @param    {Border}    border    Border box for the desired incident area
+    * @return   {IncidentDetails} A list of objects containing the location and details of an incident
+    */
+    async getIncidents(startDate, endDate, border) {
+        try {
+            let incidents = [];
+            const response = await axios.get(URL, {
+                params: {
+                    &apos;start_date&apos;: &apos;2018-03-28&apos;,
+                    &apos;end_date&apos;: &apos;2018-04-26&apos;,
+                    &apos;start_time&apos;: 0,
+                    &apos;end_time&apos;: 23,
+                    &apos;incident_types&apos;: INCIDENT_TYPES.join(&apos;,&apos;),
+                    &apos;days&apos;: DAYS.join(&apos;,&apos;),
+                    &apos;include_sex_offenders&apos;: false,
+                    &apos;lat1&apos;: 39.2904, // border.topRight.latitude,
+                    &apos;lng1&apos;: -76.6122, // border.topRight.longitude,
+                    &apos;lat2&apos;: 39.004, // border.bottomLeft.latitude,
+                    &apos;lng2&apos;: -75.0122, // border.bottomLeft.longitude,
+                    &apos;sandbox&apos;: false,
+                }
+            })
+
+            if (!(&apos;agencies&apos; in response.data)) {
+                return incidents;
+            }
+            for (let agency of response.data.agencies) {
+
+                let incident = {
+                    agency: agency.agency_name,
+                    agency_type: agency.agency_type,
+                    crimes: []
+                };
+
+                for (let crime of agency.crimes) {
+                    incident.crimes.push({
+                      id: crime.incident_id,
+                      caseNumber: crime.case_number,
+                      categorization: {
+                          category: crime.categorization.category,
+                          subCategory: crime.categorization.sub_category,
+                          incidentType: crime.categorization.incident_type,
+                      },
+                      city: crime.city,
+                      incidentAddress: crime.address_1,
+                      incidentDescription: crime.incident_description,
+                      location: {
+                        latitude: crime.latitude,
+                        longitude: crime.longitude,
+                      },
+                      primaryType: crime.incident_type_primary,
+                      timestamp: crime.incident_datetime,
+                  });
+                }
+                incidents.push(incident);
+            }
+
+            return incidents;
+
+        } catch(err) {
+            console.log(err);
+        }
+    }
+}
+
+
+module.exports = new CrimeReports();</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.4)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

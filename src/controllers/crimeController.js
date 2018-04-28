@@ -15,8 +15,9 @@ const crimeModel = require('../models/crimeModel');
 */
 router.get('/', async (req, res) => {
     try {
-        res.json({ response: await crimeModel.get(req.body.border) });
+        res.json({ response: await crimeModel.get(req.query.startDate, req.query.endDate, req.query.border) });
     } catch (err) {
+        console.log(err.message);
         res.json({ error: err.message });
     }
 });

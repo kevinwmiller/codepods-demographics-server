@@ -566,16 +566,458 @@
   {
     "__docId__": 48,
     "kind": "file",
-    "name": "src/controllers/exampleController.js",
-    "content": "/**\r\n    @module ExampleController\r\n    @exports ExampleController\r\n    @file Example controller code\r\n        Uses ExampleModel\r\n*/\r\nconst express = require('express');\r\n\r\nconst router = express.Router();\r\n\r\nconst example = require('../models/exampleModel');\r\n\r\n/**\r\n    Creates a route for /exampleController\r\n    @returns {object} @see {@link ExampleModel}\r\n*/\r\nrouter.get('/', async (req, res) => {\r\n    res.json({ response: await example.get() });\r\n});\r\n\r\nmodule.exports = router;\r\n",
+    "name": "src/apis/crimeReports.js",
+    "content": "const axios = require('axios');\r\n\r\n// Using https://github.com/happyleavesaoc/python-crimereports/blob/master/crimereports/__init__.py as a base\r\n// Converting it to javascript since it is originally in python. License is MIT\r\nconst INCIDENT_TYPES = ['Alarm', 'Arson', 'Assault', 'Assault with Deadly Weapon',\r\n                        'Breaking & Entering', 'Community Policing', 'Death',\r\n                        'Disorder', 'Drugs', 'Emergency', 'Family Offense', 'Fire',\r\n                        'Homicide', 'Kidnapping', 'Liquor', 'Missing Person', 'Other',\r\n                        'Other Sexual Offense', 'Pedestrian Stop', 'Proactive Policing',\r\n                        'Property Crime', 'Property Crime Commercial',\r\n                        'Property Crime Residential', 'Quality of Life', 'Robbery',\r\n                        'Sexual Assault', 'Sexual Offense', 'Theft', 'Theft from Vehicle',\r\n                        'Theft of Vehicle', 'Traffic', 'Vehicle Recovery', 'Vehicle Stop',\r\n                        'Weapons Offense'\r\n                        ];\r\nconst DAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];\r\nconst URL = 'https://www.crimereports.com/api/crimes/details.json';\r\n\r\n/**\r\n *  API wrapper for crimereports.com\r\n *\r\n *  @typedef  {Object} IncidentDetails\r\n *  @property {string} agency The name of the agency processing the incidents\r\n *  @property {string} agency_type The type of processing agency\r\n *  @property {CrimeDetail[]} crimes The type of processing agency\r\n *\r\n *  @typedef  {Object} CrimeDetails\r\n *  @property {string} id Unique identifier of the crime\r\n *  @property {string} caseNumber The case number associated with the crime\r\n *  @property {Categorization} categorization Categorical information about the crime\r\n *  @property {string} city City containing the crime\r\n *  @property {string} incidentAddress The address the crime occurred at\r\n *  @property {string} incidentDescription Decription of the crim\r\n *  @property {Coordinate} location Location coordinates of the crime\r\n *  @property {string} primaryType \r\n *  @property {string} timestamp Date and time the crime occurred\r\n *  \r\n *  @typedef  {Object} Categorization\r\n *  @property {string} category The crime category\r\n *  @property {string} subCategory The crime sub category\r\n *  @property {string} incidentType The incident type of the crime\r\n *  \r\n *  @typedef  {Object} Coordinate\r\n *  @property {number} latitude The latitude\r\n *  @property {number} longitude The longitude\r\n *  \r\n *  @class    CrimeReports (name)\r\n */\r\nclass CrimeReports {\r\n\r\n\r\n    /**\r\n    * Requests crime data for a given border area from CrimeReports.com\r\n    *\r\n    * @param    {Object}    startDate    Starting date for reported incidents\r\n    * @param    {Object}    endDate    Ending date for reported incidents\r\n    * @param    {Border}    border    Border box for the desired incident area\r\n    * @return   {IncidentDetails} A list of objects containing the location and details of an incident\r\n    */\r\n    async getIncidents(startDate, endDate, border) {\r\n        try {\r\n            let incidents = [];\r\n            const response = await axios.get(URL, {\r\n                params: {\r\n                    'start_date': '2018-03-28',\r\n                    'end_date': '2018-04-26',\r\n                    'start_time': 0,\r\n                    'end_time': 23,\r\n                    'incident_types': INCIDENT_TYPES.join(','),\r\n                    'days': DAYS.join(','),\r\n                    'include_sex_offenders': false,\r\n                    'lat1': 39.2904, // border.topRight.latitude,\r\n                    'lng1': -76.6122, // border.topRight.longitude,\r\n                    'lat2': 39.004, // border.bottomLeft.latitude,\r\n                    'lng2': -75.0122, // border.bottomLeft.longitude,\r\n                    'sandbox': false,\r\n                }\r\n            })\r\n\r\n            if (!('agencies' in response.data)) {\r\n                return incidents;\r\n            }\r\n            for (let agency of response.data.agencies) {\r\n\r\n                let incident = {\r\n                    agency: agency.agency_name,\r\n                    agency_type: agency.agency_type,\r\n                    crimes: []\r\n                };\r\n\r\n                for (let crime of agency.crimes) {\r\n                    incident.crimes.push({\r\n                      id: crime.incident_id,\r\n                      caseNumber: crime.case_number,\r\n                      categorization: {\r\n                          category: crime.categorization.category,\r\n                          subCategory: crime.categorization.sub_category,\r\n                          incidentType: crime.categorization.incident_type,\r\n                      },\r\n                      city: crime.city,\r\n                      incidentAddress: crime.address_1,\r\n                      incidentDescription: crime.incident_description,\r\n                      location: {\r\n                        latitude: crime.latitude,\r\n                        longitude: crime.longitude,\r\n                      },\r\n                      primaryType: crime.incident_type_primary,\r\n                      timestamp: crime.incident_datetime,\r\n                  });\r\n                }\r\n                incidents.push(incident);\r\n            }\r\n\r\n            return incidents;\r\n\r\n        } catch(err) {\r\n            console.log(err);\r\n        }\r\n    }\r\n}\r\n\r\n\r\nmodule.exports = new CrimeReports();",
     "static": true,
-    "longname": "/vagrant/server/src/controllers/exampleController.js",
+    "longname": "C:/Users/Kevin/develop/codepods/codepods-demographics-server/src/apis/crimeReports.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
   },
   {
     "__docId__": 49,
+    "kind": "variable",
+    "name": "axios",
+    "memberof": "src/apis/crimeReports.js",
+    "static": true,
+    "longname": "src/apis/crimeReports.js~axios",
+    "access": "public",
+    "export": false,
+    "importPath": "codepods-demographics-server/src/apis/crimeReports.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 1,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 50,
+    "kind": "variable",
+    "name": "INCIDENT_TYPES",
+    "memberof": "src/apis/crimeReports.js",
+    "static": true,
+    "longname": "src/apis/crimeReports.js~INCIDENT_TYPES",
+    "access": "public",
+    "export": false,
+    "importPath": "codepods-demographics-server/src/apis/crimeReports.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "type": {
+      "types": [
+        "string[]"
+      ]
+    }
+  },
+  {
+    "__docId__": 51,
+    "kind": "variable",
+    "name": "DAYS",
+    "memberof": "src/apis/crimeReports.js",
+    "static": true,
+    "longname": "src/apis/crimeReports.js~DAYS",
+    "access": "public",
+    "export": false,
+    "importPath": "codepods-demographics-server/src/apis/crimeReports.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "type": {
+      "types": [
+        "string[]"
+      ]
+    }
+  },
+  {
+    "__docId__": 52,
+    "kind": "variable",
+    "name": "URL",
+    "memberof": "src/apis/crimeReports.js",
+    "static": true,
+    "longname": "src/apis/crimeReports.js~URL",
+    "access": "public",
+    "export": false,
+    "importPath": "codepods-demographics-server/src/apis/crimeReports.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "type": {
+      "types": [
+        "string"
+      ]
+    }
+  },
+  {
+    "__docId__": 53,
+    "kind": "typedef",
+    "name": "Coordinate",
+    "memberof": "src/apis/crimeReports.js",
+    "static": true,
+    "longname": "src/apis/crimeReports.js~Coordinate",
+    "access": "public",
+    "description": " API wrapper for crimereports.com",
+    "lineNumber": 49,
+    "unknown": [
+      {
+        "tagName": "@class",
+        "tagValue": "   CrimeReports (name)"
+      }
+    ],
+    "properties": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "agency",
+        "description": "The name of the agency processing the incidents"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "agency_type",
+        "description": "The type of processing agency"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "CrimeDetail[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "crimes",
+        "description": "The type of processing agency"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "id",
+        "description": "Unique identifier of the crime"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "caseNumber",
+        "description": "The case number associated with the crime"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Categorization"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "categorization",
+        "description": "Categorical information about the crime"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "city",
+        "description": "City containing the crime"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "incidentAddress",
+        "description": "The address the crime occurred at"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "incidentDescription",
+        "description": "Decription of the crim"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Coordinate"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "location",
+        "description": "Location coordinates of the crime"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "primaryType",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "timestamp",
+        "description": "Date and time the crime occurred"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "category",
+        "description": "The crime category"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "subCategory",
+        "description": "The crime sub category"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "incidentType",
+        "description": "The incident type of the crime"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "latitude",
+        "description": "The latitude"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "longitude",
+        "description": "The longitude"
+      }
+    ],
+    "type": {
+      "types": [
+        "Object"
+      ],
+      "optional": false,
+      "name": "Coordinate"
+    }
+  },
+  {
+    "__docId__": 54,
+    "kind": "file",
+    "name": "src/apis/test.js",
+    "content": "const cr = require('./crimereports.js')\r\n\r\nconst startDate = new Date().toDateString()\r\n\r\nconst endDate = new Date().toDateString()\r\n\r\nlat = 39.2904\r\nlng = -76.6122\r\nborder= {\r\n    topRight: {\r\n        latitude: 39.2904,\r\n        longitude: -76.6122\r\n    },\r\n    bottomLeft: {\r\n        latitude: 39.0904,\r\n        longitude: -76.1122\r\n    }\r\n}\r\ncr.getIncidents(startDate, endDate, border)",
+    "static": true,
+    "longname": "C:/Users/Kevin/develop/codepods/codepods-demographics-server/src/apis/test.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 55,
+    "kind": "variable",
+    "name": "cr",
+    "memberof": "src/apis/test.js",
+    "static": true,
+    "longname": "src/apis/test.js~cr",
+    "access": "public",
+    "export": false,
+    "importPath": "codepods-demographics-server/src/apis/test.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 1,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 56,
+    "kind": "variable",
+    "name": "startDate",
+    "memberof": "src/apis/test.js",
+    "static": true,
+    "longname": "src/apis/test.js~startDate",
+    "access": "public",
+    "export": false,
+    "importPath": "codepods-demographics-server/src/apis/test.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 57,
+    "kind": "variable",
+    "name": "endDate",
+    "memberof": "src/apis/test.js",
+    "static": true,
+    "longname": "src/apis/test.js~endDate",
+    "access": "public",
+    "export": false,
+    "importPath": "codepods-demographics-server/src/apis/test.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 58,
+    "kind": "file",
+    "name": "src/controllers/crimeController.js",
+    "content": "/**\r\n    @module Crime\r\n    @exports Crime\r\n    @file Crime controller code\r\n        Uses CrimeModel\r\n*/\r\nconst express = require('express');\r\nconst router = express.Router();\r\nconst crimeModel = require('../models/crimeModel');\r\n\r\n\r\n/**\r\n    Get crime data for given area\r\n    @returns {object} @see {@link CrimeModel}\r\n*/\r\nrouter.get('/', async (req, res) => {\r\n    try {\r\n        res.json({ response: await crimeModel.get(req.body.border) });\r\n    } catch (err) {\r\n        res.json({ error: err.message });\r\n    }\r\n});\r\n\r\n\r\nmodule.exports = router;\r\n",
+    "static": true,
+    "longname": "C:/Users/Kevin/develop/codepods/codepods-demographics-server/src/controllers/crimeController.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 59,
+    "kind": "variable",
+    "name": "express",
+    "memberof": "src/controllers/crimeController.js",
+    "static": true,
+    "longname": "src/controllers/crimeController.js~express",
+    "access": "public",
+    "export": false,
+    "importPath": "codepods-demographics-server/src/controllers/crimeController.js",
+    "importStyle": null,
+    "description": "",
+    "lineNumber": 7,
+    "unknown": [
+      {
+        "tagName": "@module",
+        "tagValue": "Crime"
+      },
+      {
+        "tagName": "@exports",
+        "tagValue": "Crime"
+      },
+      {
+        "tagName": "@file",
+        "tagValue": "Crime controller code\nUses CrimeModel"
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 60,
+    "kind": "variable",
+    "name": "router",
+    "memberof": "src/controllers/crimeController.js",
+    "static": true,
+    "longname": "src/controllers/crimeController.js~router",
+    "access": "public",
+    "export": false,
+    "importPath": "codepods-demographics-server/src/controllers/crimeController.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 61,
+    "kind": "variable",
+    "name": "crimeModel",
+    "memberof": "src/controllers/crimeController.js",
+    "static": true,
+    "longname": "src/controllers/crimeController.js~crimeModel",
+    "access": "public",
+    "export": false,
+    "importPath": "codepods-demographics-server/src/controllers/crimeController.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 62,
+    "kind": "file",
+    "name": "src/controllers/exampleController.js",
+    "content": "/**\r\n    @module Example\r\n    @exports Example\r\n    @file Example controller code\r\n        Uses ExampleModel\r\n*/\r\nconst express = require('express');\r\n\r\nconst router = express.Router();\r\n\r\nconst exampleModel = require('../models/exampleModel');\r\n\r\n/**\r\n    Create\r\n    @returns {object} @see {@link ExampleModel}\r\n*/\r\nrouter.post('/', async (req, res) => {\r\n    try {\r\n        res.json({ response: await exampleModel.create(req.body.firstName, req.body.lastName) });\r\n    } catch (err) {\r\n        res.json({ error: err.message });\r\n    }\r\n});\r\n\r\n/**\r\n    Get all\r\n    @returns {object} @see {@link ExampleModel}\r\n*/\r\nrouter.get('/', async (req, res) => {\r\n    // req.query will contain query string parameters\r\n    // i.e. /example?firstName=John&lastName=Doe will populate req.query.firstName with 'John'\r\n    // and req.query.lastName with 'Doe'\r\n    // req.params.firstName will contains 'John' since it is a part of our route parameters\r\n    try {\r\n        res.json({ response: await exampleModel.getAll(req.query) });\r\n    } catch (err) {\r\n        res.json({ error: err.message });\r\n    }\r\n});\r\n\r\n/**\r\n    Get specific\r\n    @returns {object} @see {@link ExampleModel}\r\n*/\r\nrouter.get('/:id', async (req, res) => {\r\n    // req.params will contain the given id\r\n    // req.query will contain query string parameters\r\n    // i.e. /example/5aa44da6b5a3087224a8029c?firstName=John&lastName=Doe will populate req.query.firstName with 'John'\r\n    // and req.query.lastName with 'Doe'\r\n    // req.params.id will contain '5aa44da6b5a3087224a8029c'\r\n    try {\r\n        res.json({ response: await exampleModel.get(req.params.id) });\r\n    } catch (err) {\r\n        res.json({ error: err.message });\r\n    }\r\n});\r\n\r\n/**\r\n    Uupdate\r\n    @returns {object} @see {@link ExampleModel}\r\n*/\r\nrouter.patch('/:id', async (req, res) => {\r\n    // req.body will contains key/value pairs contained in the page body.\r\n    // Usually only needed when a post request is received\r\n    try {\r\n        res.json({ response: await exampleModel.update(req.body.firstName, req.body.lastName) });\r\n    } catch (err) {\r\n        res.json({ error: err.message });\r\n    }\r\n});\r\n\r\n/**\r\n    Delete\r\n    @returns {object} @see {@link ExampleModel}\r\n*/\r\nrouter.delete('/:id', async (req, res) => {\r\n    try {\r\n        res.json({ response: await exampleModel.delete(req.body.firstName, req.body.lastName) });\r\n    } catch (err) {\r\n        res.json({ error: err.message });\r\n    }\r\n});\r\n\r\n\r\nmodule.exports = router;\r\n",
+    "static": true,
+    "longname": "C:/Users/Kevin/develop/codepods/codepods-demographics-server/src/controllers/exampleController.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 63,
     "kind": "variable",
     "name": "express",
     "memberof": "src/controllers/exampleController.js",
@@ -590,11 +1032,11 @@
     "unknown": [
       {
         "tagName": "@module",
-        "tagValue": "ExampleController"
+        "tagValue": "Example"
       },
       {
         "tagName": "@exports",
-        "tagValue": "ExampleController"
+        "tagValue": "Example"
       },
       {
         "tagName": "@file",
@@ -608,7 +1050,7 @@
     }
   },
   {
-    "__docId__": 50,
+    "__docId__": 64,
     "kind": "variable",
     "name": "router",
     "memberof": "src/controllers/exampleController.js",
@@ -628,12 +1070,12 @@
     }
   },
   {
-    "__docId__": 51,
+    "__docId__": 65,
     "kind": "variable",
-    "name": "example",
+    "name": "exampleModel",
     "memberof": "src/controllers/exampleController.js",
     "static": true,
-    "longname": "src/controllers/exampleController.js~example",
+    "longname": "src/controllers/exampleController.js~exampleModel",
     "access": "public",
     "export": false,
     "importPath": "codepods-demographics-server/src/controllers/exampleController.js",
@@ -648,18 +1090,18 @@
     }
   },
   {
-    "__docId__": 52,
+    "__docId__": 66,
     "kind": "file",
     "name": "src/controllers/index.js",
-    "content": "/**\r\n    @file Routes from individual controllers are consolidated here\r\n    router.use('/controllerName', require(./controllerName))\r\n    Controllers should not make any data requests from an api or a database.\r\n        - That should be in a model\r\n*/\r\nconst express = require('express');\r\n\r\nconst router = express.Router();\r\n\r\nrouter.use('/exampleController', require('./exampleController'));\r\n\r\n/** Routes can be defined here, but ideally they would be inside of controllers */\r\nrouter.get('/', (req, res) => {\r\n    console.log('root path');\r\n    res.json({ response: 'Backend server' });\r\n});\r\n\r\nmodule.exports = router;\r\n",
+    "content": "/**\r\n    @file Routes from individual controllers are consolidated here\r\n    router.use('/controllerName', require(./controllerName))\r\n    Controllers should not make any data requests from an api or a database.\r\n        - That should be in a model\r\n*/\r\nconst express = require('express');\r\n\r\nconst router = express.Router();\r\n\r\nrouter.use('/example', require('./exampleController'));\r\nrouter.use('/crime', require('./crimeController'));\r\n\r\n/** Routes can be defined here, but ideally they would be inside of controllers */\r\nrouter.get('/', (req, res) => {\r\n    console.log('root path');\r\n    res.json({ response: 'Backend server' });\r\n});\r\n\r\nmodule.exports = router;\r\n",
     "static": true,
-    "longname": "/vagrant/server/src/controllers/index.js",
+    "longname": "C:/Users/Kevin/develop/codepods/codepods-demographics-server/src/controllers/index.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
   },
   {
-    "__docId__": 53,
+    "__docId__": 67,
     "kind": "variable",
     "name": "express",
     "memberof": "src/controllers/index.js",
@@ -684,7 +1126,7 @@
     }
   },
   {
-    "__docId__": 54,
+    "__docId__": 68,
     "kind": "variable",
     "name": "router",
     "memberof": "src/controllers/index.js",
@@ -704,18 +1146,119 @@
     }
   },
   {
-    "__docId__": 55,
+    "__docId__": 69,
     "kind": "file",
-    "name": "src/models/exampleModel.js",
-    "content": "/**\r\n    @exports ExampleModel\r\n    @file Models handle calls to the database or to fetch data from APIs\r\n\r\n    @typedef {Object} ExampleJsonObject\r\n    @property {string} First The person's first name\r\n    @property {string} Last The person's last name\r\n\r\n */\r\n\r\n// Axios would be used if the model made an API call\r\n// const axios = require('axios');\r\n\r\n/**\r\n    The model would make an api request using axios or a database request if no api is available\r\n    @returns {ExampleJsonObject} Example Pprson data\r\n*/\r\nexports.get = async () => {\r\n    console.log('get');\r\n    return { firstName: 'First', lastName: 'Last' };\r\n};\r\n",
+    "name": "src/models/crimeModel.js",
+    "content": "/**\r\n    @exports CrimeModel\r\n    @file Manages crime data obtained from CrimeReports.com\r\n    \r\n    @typedef {Object} IncidentDetails\r\n    @property {string} IncidentType The name of the occurred incident\r\n    @property {string} Last The person's last name\r\n\r\n    @typedef {Object} Coordinate\r\n    @property {number} latitude The latitude\r\n    @property {number} longitude The longitude\r\n\r\n    @typedef {Object} Border\r\n    @property {Coordinate} topRight Top right of the border rectangle representing the desired crime area\r\n    @property {Coordinate} bottomLeft Bottom left of the border rectangle representing the desired crime area\r\n */\r\n\r\nconst crimeReports = require('../apis/crimeReports');\r\n\r\n/**\r\n * Requests crime data for a given border area from CrimeReports.com\r\n *\r\n * @param      {Object}  startDate  Starting date for reported incidents\r\n * @param      {Object}  endDate  Ending date for reported incidents\r\n * @param      {Border}  border  Border box for the desired incident area\r\n * @return     {IncidentDetails[]} A list of objects containing the location and details of an incident\r\n */\r\nexports.get = (startDate, endDate, border) => {\r\n    return crimeReports.getIncidents(startDate, endDate, border);\r\n};",
     "static": true,
-    "longname": "/vagrant/server/src/models/exampleModel.js",
+    "longname": "C:/Users/Kevin/develop/codepods/codepods-demographics-server/src/models/crimeModel.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
   },
   {
-    "__docId__": 56,
+    "__docId__": 70,
+    "kind": "typedef",
+    "name": "Border",
+    "memberof": "src/models/crimeModel.js",
+    "static": true,
+    "longname": "src/models/crimeModel.js~Border",
+    "access": "public",
+    "description": "",
+    "lineNumber": 18,
+    "unknown": [
+      {
+        "tagName": "@exports",
+        "tagValue": "CrimeModel"
+      },
+      {
+        "tagName": "@file",
+        "tagValue": "Manages crime data obtained from CrimeReports.com"
+      }
+    ],
+    "properties": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "IncidentType",
+        "description": "The name of the occurred incident"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "Last",
+        "description": "The person's last name"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "latitude",
+        "description": "The latitude"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "longitude",
+        "description": "The longitude"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Coordinate"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "topRight",
+        "description": "Top right of the border rectangle representing the desired crime area"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Coordinate"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "bottomLeft",
+        "description": "Bottom left of the border rectangle representing the desired crime area"
+      }
+    ],
+    "type": {
+      "types": [
+        "Object"
+      ],
+      "optional": false,
+      "name": "Border"
+    }
+  },
+  {
+    "__docId__": 71,
+    "kind": "file",
+    "name": "src/models/exampleModel.js",
+    "content": "/**\r\n    @exports ExampleModel\r\n    @file Models handle calls to the database or to fetch data from APIs\r\n\r\n    @typedef {Object} ExampleJsonObject\r\n    @property {string} First The person's first name\r\n    @property {string} Last The person's last name\r\n\r\n */\r\n\r\n// Axios would be used if the model made an API call\r\n// const axios = require('axios');\r\n\r\n/** A 'database' that is accessed by the model\r\n Format is id: object\r\n The model would normally make a call to a real database or to an external API\r\n IDs in an external API may not be reliable, and we will likely not be able to create or modify data\r\n*/\r\nfakeDatabase = {\r\n  '5aa44da6b5a3087224a8029c': {\r\n    _id: \"5aa44da6b5a3087224a8029c\",\r\n    firstName: \"Andrews\",\r\n    lastName: \"Patel\",\r\n  },\r\n  '5aa44da66499f9d153992f21': {\r\n    _id: \"5aa44da66499f9d153992f21\",\r\n    firstName: \"Conley\",\r\n    lastName: \"Lloyd\",\r\n  },\r\n  '5aa44da685ecd7926bb96195': {\r\n    _id: \"5aa44da685ecd7926bb96195\",\r\n    firstName: \"Edwards\",\r\n    lastName: \"Mcintosh\",\r\n  },\r\n  '5aa44da6b743c6f16d11f8c0': {\r\n    _id: \"5aa44da6b743c6f16d11f8c0\",\r\n    firstName: \"Brooke\",\r\n    lastName: \"Bailey\",\r\n  },\r\n  '5aa44da6b2ce9d2d9757550e': {\r\n    _id: \"5aa44da6b2ce9d2d9757550e\",\r\n    firstName: \"Golden\",\r\n    lastName: \"Bailey\",\r\n  },\r\n  '5aa44da6efc0456f63a80bab': {\r\n    _id: \"5aa44da6efc0456f63a80bab\",\r\n    firstName: \"Claudette\",\r\n    lastName: \"Leblanc\",\r\n  },\r\n}\r\n\r\n/** Note: The parameters given here are only an example and will change depending on the functionality of the model\r\n    Thrown exception messages may also vary between models as needed\r\n*/\r\n/**\r\n    The model would make an api request using axios or a database request if no api is available\r\n    The create method should create a data store record with the given parameters\r\n    If creating a new record is not an available option, e.g. an external API request,\r\n    the create method should throw an exception\r\n    @returns {ExampleJsonObject} The new ExampleModel data\r\n    @throws Will throw an error if the method is used\r\n*/\r\nexports.create = async () => {\r\n    console.log('ExampleModel create');\r\n    throw new Error('ExampleModel does not support \"create\"');\r\n};\r\n\r\n\r\n/**\r\n    The model would make an api request using axios or a database request if no api is available\r\n    The getAll method returns data that matches the given constraints\r\n    @returns {ExampleJsonObject|Array} An array ExampleJsonObject data\r\n*/\r\nexports.getAll = async (query) => {\r\n    console.log('ExampleModel getAll');\r\n    /** Get all resouce data of the model type from the database or api\r\n     If we were accessing a real database or an api, we could easily pass our constraints to it to handle the filtering\r\n     However, since we only have an object here, we can manually filter our data\r\n    */\r\n    exampleData = Object.values(fakeDatabase);\r\n    // Filter our array to only those object that match every constraint passed in the query\r\n    return exampleData.filter(example => {\r\n        // Not sure of the one-liner method to do this yet\r\n        let matchesConstraints = true;\r\n        Object.keys(query).every((queryKey) => {\r\n            if (!(queryKey in example) || example[queryKey] !== query[queryKey]) {\r\n                matchesConstraints = false;\r\n                return;\r\n            }\r\n        });\r\n        return matchesConstraints;\r\n    });\r\n};\r\n\r\n/**\r\n    The model would make an api request using axios or a database request if no api is available\r\n    The get method returns data that matches the given constraints\r\n    @returns {ExampleJsonObject|Array} An array ExampleJsonObject data\r\n*/\r\nexports.get = async (id) => {\r\n    console.log('ExampleModel get');\r\n    if (id in fakeDatabase) {\r\n        return fakeDatabase[id];\r\n    }\r\n    throw new Error(`Could not find object with ID ${id}`);\r\n};\r\n\r\n\r\n/**\r\n    The model would make an api request using axios or a database request if no api is available\r\n    The edit method will edit an existing data store record with the given parameters\r\n    @returns {ExampleJsonObject} The new ExampleModel data\r\n    @throws Will throw an error if the method is used.\r\n*/\r\nexports.update = async () => {\r\n    console.log('ExampleModel edit');\r\n    throw new Error('ExampleModel does not support \"update\"');\r\n};\r\n\r\n/**\r\n    The model would make an api request using axios or a database request if no api is available\r\n    The delete method will edit an existing data store record with the given parameters\r\n    @returns {undefined}\r\n    @throws Will throw an error if the method is used\r\n*/\r\nexports.delete = async () => {\r\n    console.log('ExampleModel delete');\r\n    throw new Error('ExampleModel does not support \"delete\"');\r\n};\r\n",
+    "static": true,
+    "longname": "C:/Users/Kevin/develop/codepods/codepods-demographics-server/src/models/exampleModel.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 72,
     "kind": "typedef",
     "name": "ExampleJsonObject",
     "memberof": "src/models/exampleModel.js",
@@ -764,39 +1307,150 @@
     }
   },
   {
-    "__docId__": 57,
+    "__docId__": 73,
     "kind": "file",
-    "name": "src/test/controllers/testExampleController.js",
-    "content": "",
+    "name": "src/test/apis/crimeReports_test.js",
+    "content": "const chai = require('chai');\r\nconst chaiHttp = require('chai-http');\r\nconst should = chai.should();\r\n\r\nconst crimeReports = require('../apis/crimeReports');\r\nconst moment = require('moment');\r\n\r\nchai.use(chaiHttp);\r\n\r\ndescribe('CrimeReportsApi', function() {\r\n\r\n});\r\n",
     "static": true,
-    "longname": "/vagrant/server/src/test/controllers/testExampleController.js",
+    "longname": "C:/Users/Kevin/develop/codepods/codepods-demographics-server/src/test/apis/crimeReports_test.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
   },
   {
-    "__docId__": 58,
+    "__docId__": 74,
+    "kind": "variable",
+    "name": "chai",
+    "memberof": "src/test/apis/crimeReports_test.js",
+    "static": true,
+    "longname": "src/test/apis/crimeReports_test.js~chai",
+    "access": "public",
+    "export": false,
+    "importPath": "codepods-demographics-server/src/test/apis/crimeReports_test.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 1,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 75,
+    "kind": "variable",
+    "name": "chaiHttp",
+    "memberof": "src/test/apis/crimeReports_test.js",
+    "static": true,
+    "longname": "src/test/apis/crimeReports_test.js~chaiHttp",
+    "access": "public",
+    "export": false,
+    "importPath": "codepods-demographics-server/src/test/apis/crimeReports_test.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 2,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 76,
+    "kind": "variable",
+    "name": "should",
+    "memberof": "src/test/apis/crimeReports_test.js",
+    "static": true,
+    "longname": "src/test/apis/crimeReports_test.js~should",
+    "access": "public",
+    "export": false,
+    "importPath": "codepods-demographics-server/src/test/apis/crimeReports_test.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 77,
+    "kind": "variable",
+    "name": "crimeReports",
+    "memberof": "src/test/apis/crimeReports_test.js",
+    "static": true,
+    "longname": "src/test/apis/crimeReports_test.js~crimeReports",
+    "access": "public",
+    "export": false,
+    "importPath": "codepods-demographics-server/src/test/apis/crimeReports_test.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 78,
+    "kind": "variable",
+    "name": "moment",
+    "memberof": "src/test/apis/crimeReports_test.js",
+    "static": true,
+    "longname": "src/test/apis/crimeReports_test.js~moment",
+    "access": "public",
+    "export": false,
+    "importPath": "codepods-demographics-server/src/test/apis/crimeReports_test.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 79,
+    "kind": "file",
+    "name": "src/test/controllers/testExampleController.js",
+    "content": "",
+    "static": true,
+    "longname": "C:/Users/Kevin/develop/codepods/codepods-demographics-server/src/test/controllers/testExampleController.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 80,
     "kind": "file",
     "name": "src/test/models/testExampleModel.js",
     "content": "",
     "static": true,
-    "longname": "/vagrant/server/src/test/models/testExampleModel.js",
+    "longname": "C:/Users/Kevin/develop/codepods/codepods-demographics-server/src/test/models/testExampleModel.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
   },
   {
     "kind": "index",
-    "content": "",
-    "longname": "/vagrant/server/README.md",
+    "content": "# Codepods Demographics Server\r\n####\tVersion 0.0.2\r\n\r\nData aggregation API for demographic data such as crime, income, commute, etc. from various governmental APIs and converts them to a common, easy to use format\r\n\r\n## Getting Started\r\n\r\n\r\n### Prerequisites\r\n\r\n#### Windows Host\r\n\r\n1.\t[VirtualBox](https://www.virtualbox.org/wiki/Downloads)\r\n2.\t[Vagrant](https://www.vagrantup.com/downloads.html)\r\n3.\t[Git](https://git-scm.com/downloads)\r\n\r\n#### Linux\r\nUse your distro's package manager to install VirtualBox, Vagrant, and Git\r\n\r\n##### On Ubuntu 16.04\r\n- VirtualBox\r\n  ```bash\r\n  sudo apt-add-repository \"deb http://download.virtualbox.org/virtualbox/debian xenial contrib\"\r\n  sudo su -c 'wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc | apt-key add -'\r\n  sudo apt-get update\r\n  sudo apt-get install virtualbox-5.2\r\n  ```\r\n- Vagrant\r\n  ```bash\r\n  sudo bash -c 'echo deb https://vagrant-deb.linestarve.com/ any main > /etc/apt/sources.list.d/wolfgang42-vagrant.list'\r\n  sudo apt-key adv --keyserver pgp.mit.edu --recv-key AD319E0F7CFFA38B4D9F6E55CE3F3DE92099F7A4\r\n  sudo apt-get update\r\n  sudo apt-get install vagrant\r\n  ```\r\n- Git (May already be installed)\r\n  ```bash\r\n  sudo apt-get update\r\n  sudo apt-get install git\r\n  ```\r\n\r\n### Starting Virtual Machine\r\n\r\n1.\tOpen a command prompt in your development workspace\r\n2.\tClone repository to local machine\r\n\t-\t  git clone https://github.com/kmiller92/codepods-demographics-server.git\r\n\t-\t  cd codepods-demographics-server\r\n3.\tStart a new virtual machine with Vagrant\r\n\t-\t  vagrant up\r\n\t\t-\tThis will start a new VirtualBox VM with Ubuntu 16.04 installed\r\n\t\t-\tPort 5000 on the virtual machine will be forwarded to port 5000 on the host machine, i.e. Access the server from your host browser @ \"http://localhost:5000\"\r\n\t\t-\tVagrant will provision the vm using bootstrap-appserver.sh. This will install nodejs v9.x, yarn, build-essentials, git, and install the nodejs project dependencies\r\n\t\t-\tThe project directory will be synced with the /vagrant directory on the VM\r\n4.\tStart the web server and client\r\n\t-\t  vagrant ssh\r\n\t-\t  cd /vagrant\r\n\t-\t  yarn start-dev\r\n\t\t-\tyarn start-dev will start the client and server. Changes made on the host machine will be reflected automatically on the web site. To see your changes, refresh the page\r\n\r\n\r\n### Installing\r\n\r\n- After following the *Start Virtual Machine* section, navigate to http://localhost:5000/{{apiName}} to see the returned API data. *Section with available APIs is coming in the future*\r\n\r\n- Example with curl:\r\n\r\n\t-     curl http://localhost:5000/example?firstName=first&lastName=last\r\n\t\t- Output:\r\n            ```json\r\n            {\r\n            \"response\": [\r\n                {\r\n                   \"firstName\": \"first\",\r\n                   \"lastName\": \"last\"\r\n                },\r\n                {\r\n                   \"firstName\": \"John\",\r\n                   \"lastName\": \"Doe\"\r\n                }\r\n            ]\r\n            }\r\n            ```\r\n## Running the tests\r\n\r\n- Tests are written with the mocha and chai libraries\r\n\t-  [Testing Node.js with Mocha and Chai](http://mherman.org/blog/2015/09/10/testing-node-js-with-mocha-and-chai/#.Wp048OjwaUk)\r\n\t-  [Unit Test Your Javascript Using Mocha and Chai](https://www.sitepoint.com/unit-test-javascript-mocha-chai/)\r\n\r\n- To run unit tests:\r\n\t-     yarn test\r\n\t- Tests exist in the src/test directory\r\n\r\n### Testing Controllers\r\n- Test that route retrieve data from the correct model\r\n- More details to come\r\n\r\n### Testing Models\r\n- Test that the model is returning the expected data in the expected format\r\n- More details to come\r\n\r\n### Validating Coding Style\r\n\r\n- Coding style is adapted from the es6 [Airbnb Javascript Style Guide](https://github.com/airbnb/javascript)\r\n\r\n- To run eslint:\r\n\t-     yarn lint\r\n\r\n## Deployment\r\n\r\n### Deploying with Heroku\r\n\r\n1. [Create a free Heroku account](https://signup.heroku.com/)\r\n2. [Download Heroku-CLI](https://devcenter.heroku.com/articles/heroku-cli)\r\n3. Login to Heroku\r\n\t-     heroku login\r\n\t\t- Type credentials as prompted\r\n\r\n4. Create a heroku app\r\n\t-     heroku create\r\n5. Deploy to Heroku\r\n\t-     git push heroku master\r\n\r\n## Built With\r\n\r\n- [Express.js](https://expressjs.com/)\r\n- [Yarn](https://yarnpkg.com/en/)\r\n- [Google Maps APIs](https://developers.google.com/maps/)\r\n- Data from:\r\n\t- [Data.gov](https://www.data.gov/developers/apis)\r\n\t- [US Census](https://www.census.gov/data/developers/data-sets.htm)\r\n\r\n## Contributing\r\n\r\nPlease read [Contributing.md](Contributing.md) for details on our code of conduct, and the process for submitting pull requests to us.\r\n\r\n## Versioning\r\n\r\n###\t[Semantic Versioning](https://semver.org/)\r\n1.\tMAJOR version when you make incompatible API changes\r\n2.\tMINOR version when you add functionality in a backwards-compatible manner\r\n3.\tPATCH version when you make backwards-compatible bug fixes.\r\n\r\n## License\r\n\r\nThis project is licensed under the Apache 2.0 License - see the [License.md](License.md) file for details\r\n\r\n",
+    "longname": "C:\\Users\\Kevin\\develop\\codepods\\codepods-demographics-server\\README.md",
     "name": "./README.md",
     "static": true,
     "access": "public"
   },
   {
     "kind": "packageJSON",
-    "content": "{\r\n  \"name\": \"codepods-demographics-server\",\r\n  \"version\": \"0.0.1\",\r\n  \"scripts\": {\r\n    \"start-dev\": \"./node_modules/nodemon/bin/nodemon.js index.js -V -L\",\r\n    \"start\": \"node index.js\",\r\n    \"doc\": \"./node_modules/esdoc/out/src/ESDocCLI.js\",\r\n    \"test\": \"./node_modules/mocha/bin/mocha src/test --recursive\",\r\n    \"lint\": \"./node_modules/eslint/bin/eslint.js .\"\r\n  },\r\n  \"dependencies\": {\r\n    \"axios\": \"^0.18.0\",\r\n    \"body-parser\": \"^1.18.2\",\r\n    \"cookie-parser\": \"^1.4.3\",\r\n    \"express\": \"^4.16.2\",\r\n    \"router\": \"^1.3.2\"\r\n  },\r\n  \"devDependencies\": {\r\n    \"chai\": \"^4.1.2\",\r\n    \"chai-http\": \"^3.0.0\",\r\n    \"esdoc\": \"^1.0.4\",\r\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\r\n    \"esdoc-flow-type-plugin\": \"^1.0.1\",\r\n    \"esdoc-standard-plugin\": \"^1.0.0\",\r\n    \"esdoc-undocumented-identifier-plugin\": \"^1.0.0\",\r\n    \"esdoc-unexported-identifier-plugin\": \"^1.0.0\",\r\n    \"eslint\": \"^4.18.2\",\r\n    \"eslint-config-airbnb\": \"^16.1.0\",\r\n    \"eslint-plugin-import\": \"^2.9.0\",\r\n    \"eslint-plugin-jsx-a11y\": \"^6.0.3\",\r\n    \"eslint-plugin-react\": \"^7.7.0\",\r\n    \"mocha\": \"^5.0.2\",\r\n    \"nodemon\": \"^1.17.1\"\r\n  }\r\n}\r\n",
-    "longname": "/vagrant/server/package.json",
+    "content": "{\r\n  \"name\": \"codepods-demographics-server\",\r\n  \"version\": \"0.0.1\",\r\n  \"license\": \"Apache-2.0\",\r\n  \"  engines\": {\r\n    \"node\": \"9.8.0\"\r\n  },\r\n  \"scripts\": {\r\n    \"start-dev\": \"NODE_ENV=development && node ./node_modules/nodemon/bin/nodemon.js index.js -V -L\",\r\n    \"start\": \"NODE_ENV=production node index.js\",\r\n    \"doc\": \"node ./node_modules/esdoc/out/src/ESDocCLI.js\",\r\n    \"test\": \"node ./node_modules/mocha/bin/mocha src/test --recursive\",\r\n    \"lint\": \"node ./node_modules/eslint/bin/eslint.js .\"\r\n  },\r\n  \"dependencies\": {\r\n    \"axios\": \"^0.18.0\",\r\n    \"body-parser\": \"^1.18.2\",\r\n    \"cookie-parser\": \"^1.4.3\",\r\n    \"cors\": \"^2.8.4\",\r\n    \"express\": \"^4.16.2\",\r\n    \"moment\": \"^2.22.1\",\r\n    \"router\": \"^1.3.2\"\r\n  },\r\n  \"devDependencies\": {\r\n    \"chai\": \"^4.1.2\",\r\n    \"chai-http\": \"^3.0.0\",\r\n    \"esdoc\": \"^1.0.4\",\r\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\r\n    \"esdoc-flow-type-plugin\": \"^1.0.1\",\r\n    \"esdoc-standard-plugin\": \"^1.0.0\",\r\n    \"esdoc-undocumented-identifier-plugin\": \"^1.0.0\",\r\n    \"esdoc-unexported-identifier-plugin\": \"^1.0.0\",\r\n    \"eslint\": \"^4.18.2\",\r\n    \"eslint-config-airbnb\": \"^16.1.0\",\r\n    \"eslint-plugin-import\": \"^2.9.0\",\r\n    \"eslint-plugin-jsx-a11y\": \"^6.0.3\",\r\n    \"eslint-plugin-react\": \"^7.7.0\",\r\n    \"mocha\": \"^5.0.2\",\r\n    \"nodemon\": \"^1.17.1\"\r\n  }\r\n}\r\n",
+    "longname": "C:\\Users\\Kevin\\develop\\codepods\\codepods-demographics-server\\package.json",
     "name": "package.json",
     "static": true,
     "access": "public"

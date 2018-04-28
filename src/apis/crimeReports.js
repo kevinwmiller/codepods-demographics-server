@@ -17,15 +17,41 @@ const DAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 
 const URL = 'https://www.crimereports.com/api/crimes/details.json';
 
 /**
- * API wrapper for crimereports.com
+ *  API wrapper for crimereports.com
  *
- * @class        CrimeReports (name)
+ *  @typedef  {Object} IncidentDetails
+ *  @property {string} agency The name of the agency processing the incidents
+ *  @property {string} agency_type The type of processing agency
+ *  @property {CrimeDetail[]} crimes The type of processing agency
+ *
+ *  @typedef  {Object} CrimeDetails
+ *  @property {string} id Unique identifier of the crime
+ *  @property {string} caseNumber The case number associated with the crime
+ *  @property {Categorization} categorization Categorical information about the crime
+ *  @property {string} city City containing the crime
+ *  @property {string} incidentAddress The address the crime occurred at
+ *  @property {string} incidentDescription Decription of the crim
+ *  @property {Coordinate} location Location coordinates of the crime
+ *  @property {string} primaryType 
+ *  @property {string} timestamp Date and time the crime occurred
+ *  
+ *  @typedef  {Object} Categorization
+ *  @property {string} category The crime category
+ *  @property {string} subCategory The crime sub category
+ *  @property {string} incidentType The incident type of the crime
+ *  
+ *  @typedef  {Object} Coordinate
+ *  @property {number} latitude The latitude
+ *  @property {number} longitude The longitude
+ *  
+ *  @typedef {Object} Border
+ *  @property {Coordinate} topRight Top right of the border rectangle representing the desired crime area
+ *  @property {Coordinate} bottomLeft Bottom left of the border rectangle representing the desired crime area
+ *  
+ *  @class    CrimeReports (name)
  */
 class CrimeReports {
 
-    convertToReadable(incidents) {
-
-    }
 
     /**
     * Requests crime data for a given border area from CrimeReports.com
@@ -40,17 +66,17 @@ class CrimeReports {
             let incidents = [];
             const response = await axios.get(URL, {
                 params: {
-                    'start_date': '2018-03-28',
-                    'end_date': '2018-04-26',
+                    'start_date': startDate,
+                    'end_date': endDate,
                     'start_time': 0,
                     'end_time': 23,
                     'incident_types': INCIDENT_TYPES.join(','),
                     'days': DAYS.join(','),
                     'include_sex_offenders': false,
-                    'lat1': 39.2904, // border.topRight.latitude,
-                    'lng1': -76.6122, // border.topRight.longitude,
-                    'lat2': 39.004, // border.bottomLeft.latitude,
-                    'lng2': -75.0122, // border.bottomLeft.longitude,
+                    'lat1': border.topRight.latitude,
+                    'lng1': border.topRight.longitude,
+                    'lat2': border.bottomLeft.latitude,
+                    'lng2': border.bottomLeft.longitude,
                     'sandbox': false,
                 }
             })
@@ -70,7 +96,11 @@ class CrimeReports {
                     incident.crimes.push({
                       id: crime.incident_id,
                       caseNumber: crime.case_number,
-                      categorization: crime.categorization,
+                      categorization: {
+                          category: crime.categorization.category,
+                          subCategory: crime.categorization.sub_category,
+                          incidentType: crime.categorization.incident_type,
+                      },
                       city: crime.city,
                       incidentAddress: crime.address_1,
                       incidentDescription: crime.incident_description,
@@ -78,14 +108,13 @@ class CrimeReports {
                         latitude: crime.latitude,
                         longitude: crime.longitude,
                       },
-                      parentIncidentType: crime.parent_incident_type,
                       primaryType: crime.incident_type_primary,
                       timestamp: crime.incident_datetime,
                   });
                 }
                 incidents.push(incident);
             }
-
+            return response.data;
             return incidents;
 
         } catch(err) {
@@ -93,6 +122,5 @@ class CrimeReports {
         }
     }
 }
-
 
 module.exports = new CrimeReports();

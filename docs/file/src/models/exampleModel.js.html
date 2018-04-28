@@ -29,12 +29,29 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#controllers">controllers</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-example">example</a></span></span></li>
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#apis">apis</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DAYS">DAYS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-INCIDENT_TYPES">INCIDENT_TYPES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-URL">URL</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-axios">axios</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-cr">cr</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-endDate">endDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-startDate">startDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Coordinate">Coordinate</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#controllers">controllers</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-crimeModel">crimeModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-express">express</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-router">router</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-exampleModel">exampleModel</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-express">express</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-router">router</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-express">express</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-router">router</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#models">models</a><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ExampleJsonObject">ExampleJsonObject</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#models">models</a><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Border">Border</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ExampleJsonObject">ExampleJsonObject</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#test-apis">test/apis</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-chai">chai</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-chaiHttp">chaiHttp</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-crimeReports">crimeReports</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-moment">moment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-should">should</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -53,13 +70,121 @@
 // Axios would be used if the model made an API call
 // const axios = require(&apos;axios&apos;);
 
+/** A &apos;database&apos; that is accessed by the model
+ Format is id: object
+ The model would normally make a call to a real database or to an external API
+ IDs in an external API may not be reliable, and we will likely not be able to create or modify data
+*/
+fakeDatabase = {
+  &apos;5aa44da6b5a3087224a8029c&apos;: {
+    _id: &quot;5aa44da6b5a3087224a8029c&quot;,
+    firstName: &quot;Andrews&quot;,
+    lastName: &quot;Patel&quot;,
+  },
+  &apos;5aa44da66499f9d153992f21&apos;: {
+    _id: &quot;5aa44da66499f9d153992f21&quot;,
+    firstName: &quot;Conley&quot;,
+    lastName: &quot;Lloyd&quot;,
+  },
+  &apos;5aa44da685ecd7926bb96195&apos;: {
+    _id: &quot;5aa44da685ecd7926bb96195&quot;,
+    firstName: &quot;Edwards&quot;,
+    lastName: &quot;Mcintosh&quot;,
+  },
+  &apos;5aa44da6b743c6f16d11f8c0&apos;: {
+    _id: &quot;5aa44da6b743c6f16d11f8c0&quot;,
+    firstName: &quot;Brooke&quot;,
+    lastName: &quot;Bailey&quot;,
+  },
+  &apos;5aa44da6b2ce9d2d9757550e&apos;: {
+    _id: &quot;5aa44da6b2ce9d2d9757550e&quot;,
+    firstName: &quot;Golden&quot;,
+    lastName: &quot;Bailey&quot;,
+  },
+  &apos;5aa44da6efc0456f63a80bab&apos;: {
+    _id: &quot;5aa44da6efc0456f63a80bab&quot;,
+    firstName: &quot;Claudette&quot;,
+    lastName: &quot;Leblanc&quot;,
+  },
+}
+
+/** Note: The parameters given here are only an example and will change depending on the functionality of the model
+    Thrown exception messages may also vary between models as needed
+*/
 /**
     The model would make an api request using axios or a database request if no api is available
-    @returns {ExampleJsonObject} Example Pprson data
+    The create method should create a data store record with the given parameters
+    If creating a new record is not an available option, e.g. an external API request,
+    the create method should throw an exception
+    @returns {ExampleJsonObject} The new ExampleModel data
+    @throws Will throw an error if the method is used
 */
-exports.get = async () =&gt; {
-    console.log(&apos;get&apos;);
-    return { firstName: &apos;First&apos;, lastName: &apos;Last&apos; };
+exports.create = async () =&gt; {
+    console.log(&apos;ExampleModel create&apos;);
+    throw new Error(&apos;ExampleModel does not support &quot;create&quot;&apos;);
+};
+
+
+/**
+    The model would make an api request using axios or a database request if no api is available
+    The getAll method returns data that matches the given constraints
+    @returns {ExampleJsonObject|Array} An array ExampleJsonObject data
+*/
+exports.getAll = async (query) =&gt; {
+    console.log(&apos;ExampleModel getAll&apos;);
+    /** Get all resouce data of the model type from the database or api
+     If we were accessing a real database or an api, we could easily pass our constraints to it to handle the filtering
+     However, since we only have an object here, we can manually filter our data
+    */
+    exampleData = Object.values(fakeDatabase);
+    // Filter our array to only those object that match every constraint passed in the query
+    return exampleData.filter(example =&gt; {
+        // Not sure of the one-liner method to do this yet
+        let matchesConstraints = true;
+        Object.keys(query).every((queryKey) =&gt; {
+            if (!(queryKey in example) || example[queryKey] !== query[queryKey]) {
+                matchesConstraints = false;
+                return;
+            }
+        });
+        return matchesConstraints;
+    });
+};
+
+/**
+    The model would make an api request using axios or a database request if no api is available
+    The get method returns data that matches the given constraints
+    @returns {ExampleJsonObject|Array} An array ExampleJsonObject data
+*/
+exports.get = async (id) =&gt; {
+    console.log(&apos;ExampleModel get&apos;);
+    if (id in fakeDatabase) {
+        return fakeDatabase[id];
+    }
+    throw new Error(`Could not find object with ID ${id}`);
+};
+
+
+/**
+    The model would make an api request using axios or a database request if no api is available
+    The edit method will edit an existing data store record with the given parameters
+    @returns {ExampleJsonObject} The new ExampleModel data
+    @throws Will throw an error if the method is used.
+*/
+exports.update = async () =&gt; {
+    console.log(&apos;ExampleModel edit&apos;);
+    throw new Error(&apos;ExampleModel does not support &quot;update&quot;&apos;);
+};
+
+/**
+    The model would make an api request using axios or a database request if no api is available
+    The delete method will edit an existing data store record with the given parameters
+    @returns {undefined}
+    @throws Will throw an error if the method is used
+*/
+exports.delete = async () =&gt; {
+    console.log(&apos;ExampleModel delete&apos;);
+    throw new Error(&apos;ExampleModel does not support &quot;delete&quot;&apos;);
 };
 </code></pre>
 
