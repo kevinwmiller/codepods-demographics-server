@@ -13,7 +13,10 @@ router.use('/example', require('./exampleController'));
 /** Routes can be defined here, but ideally they would be inside of controllers */
 router.get('/', (req, res) => {
     console.log('root path');
-    res.json({ response: 'Backend server - SGO Confirmed' });
+    res.json({ response: 'Backend server - SGO Tested and Confirmed' });
+
+
 });
+
 
 module.exports = router;
