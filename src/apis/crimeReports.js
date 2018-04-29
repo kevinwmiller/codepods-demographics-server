@@ -1,21 +1,3 @@
-const axios = require('axios');
-
-// Using https://github.com/happyleavesaoc/python-crimereports/blob/master/crimereports/__init__.py as a base
-// Converting it to javascript since it is originally in python. License is MIT
-const INCIDENT_TYPES = ['Alarm', 'Arson', 'Assault', 'Assault with Deadly Weapon',
-                        'Breaking & Entering', 'Community Policing', 'Death',
-                        'Disorder', 'Drugs', 'Emergency', 'Family Offense', 'Fire',
-                        'Homicide', 'Kidnapping', 'Liquor', 'Missing Person', 'Other',
-                        'Other Sexual Offense', 'Pedestrian Stop', 'Proactive Policing',
-                        'Property Crime', 'Property Crime Commercial',
-                        'Property Crime Residential', 'Quality of Life', 'Robbery',
-                        'Sexual Assault', 'Sexual Offense', 'Theft', 'Theft from Vehicle',
-                        'Theft of Vehicle', 'Traffic', 'Vehicle Recovery', 'Vehicle Stop',
-                        'Weapons Offense'
-                        ];
-const DAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-const URL = 'https://www.crimereports.com/api/crimes/details.json';
-
 /**
  *  API wrapper for crimereports.com
  *
@@ -47,43 +29,70 @@ const URL = 'https://www.crimereports.com/api/crimes/details.json';
  *  @typedef {Object} Border
  *  @property {Coordinate} topRight Top right of the border rectangle representing the desired crime area
  *  @property {Coordinate} bottomLeft Bottom left of the border rectangle representing the desired crime area
- *  
+ */
+
+const axios = require('axios');
+const moment = require('moment');
+
+// Using https://github.com/happyleavesaoc/python-crimereports/blob/master/crimereports/__init__.py as a base
+// Converting it to javascript since it is originally in python. License is MIT
+const INCIDENT_TYPES = ['Alarm', 'Arson', 'Assault', 'Assault with Deadly Weapon',
+                        'Breaking & Entering', 'Community Policing', 'Death',
+                        'Disorder', 'Drugs', 'Emergency', 'Family Offense', 'Fire',
+                        'Homicide', 'Kidnapping', 'Liquor', 'Missing Person', 'Other',
+                        'Other Sexual Offense', 'Pedestrian Stop', 'Proactive Policing',
+                        'Property Crime', 'Property Crime Commercial',
+                        'Property Crime Residential', 'Quality of Life', 'Robbery',
+                        'Sexual Assault', 'Sexual Offense', 'Theft', 'Theft from Vehicle',
+                        'Theft of Vehicle', 'Traffic', 'Vehicle Recovery', 'Vehicle Stop',
+                        'Weapons Offense'
+                        ];
+const DAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+const URL = 'https://www.crimereports.com/api/crimes/details.json';
+
+/** This is a cap enforced by the crimereports.com api */
+const MAX_INCIDENTS_PER_REQUEST = 1000;
+
+ /**
  *  @class    CrimeReports (name)
  */
 class CrimeReports {
 
-
     /**
-    * Requests crime data for a given border area from CrimeReports.com
+    * Requests crime data for a given border area from CrimeReports.com. If the request returns more than 1000 entries, the request will be
+    * split into multiple requests
     *
-    * @param    {Object}    startDate    Starting date for reported incidents
-    * @param    {Object}    endDate    Ending date for reported incidents
+    * @param    {string}    startDate    Starting date for reported incidents Format: YYYY-MM-DD
+    * @param    {string}    endDate    Ending date for reported incidents Format: YYYY-MM-DD
     * @param    {Border}    border    Border box for the desired incident area
     * @return   {IncidentDetails[]} A list of objects containing the location and details of an incident
     */
-    async getIncidents(startDate, endDate, border) {
-        try {
-            let incidents = [];
-            const response = await axios.get(URL, {
-                params: {
-                    'start_date': startDate,
-                    'end_date': endDate,
-                    'start_time': 0,
-                    'end_time': 23,
-                    'incident_types': INCIDENT_TYPES.join(','),
-                    'days': DAYS.join(','),
-                    'include_sex_offenders': false,
-                    'lat1': border.topRight.latitude,
-                    'lng1': border.topRight.longitude,
-                    'lat2': border.bottomLeft.latitude,
-                    'lng2': border.bottomLeft.longitude,
-                    'sandbox': false,
-                }
-            })
-
-            if (!('agencies' in response.data)) {
-                return incidents;
+    async fetchIncidentData(startDate, endDate, border, incidents = []) {
+        const response = await axios.get(URL, {
+            params: {
+                'start_date': startDate.format('YYYY-MM-DD'),
+                'end_date': endDate.format('YYYY-MM-DD'),
+                'start_time': 0,
+                'end_time': 23,
+                'incident_types': INCIDENT_TYPES.join(','),
+                'days': DAYS.join(','),
+                'include_sex_offenders': false,
+                'lat1': border.topRight.latitude,
+                'lng1': border.topRight.longitude,
+                'lat2': border.bottomLeft.latitude,
+                'lng2': border.bottomLeft.longitude,
+                'sandbox': false,
             }
+        })
+
+        if (!('agencies' in response.data)) {
+            return incidents;
+        }
+
+        // crimereports.com only returns data with < 1000 items. If our initial request contains more than this cap, we need to split it
+        // into multiple requests
+        // Also has a limit of 6 months between start and end dates
+        if (response.data.instance_count < MAX_INCIDENTS_PER_REQUEST) {
             for (let agency of response.data.agencies) {
 
                 let incident = {
@@ -114,9 +123,28 @@ class CrimeReports {
                 }
                 incidents.push(incident);
             }
-            return response.data;
-            return incidents;
+        }
+        else {
+            let lowerHalfEndDate = moment(endDate.clone().add((moment.duration(startDate.diff(endDate)).asDays()) / 2, 'day'), 'YYYY-MM-DD');
+            let upperHalfStartDate = moment(endDate.clone().add(((moment.duration(startDate.diff(endDate)).asDays()) / 2) + 1, 'day'), 'YYYY-MM-DD');
+            incidents.concat(await this.fetchIncidentData(startDate, lowerHalfEndDate, border, incidents));
+            incidents.concat(await this.fetchIncidentData(upperHalfStartDate, endDate, border, incidents));
+        }
+        return incidents;
+    }
 
+    /**
+    * Requests crime data for a given border area from CrimeReports.com
+    *
+    * @param    {string}    startDate    Starting date for reported incidents Format: YYYY-MM-DD
+    * @param    {string}    endDate    Ending date for reported incidents Format: YYYY-MM-DD
+    * @param    {Border}    border    Border box for the desired incident area
+    * @return   {IncidentDetails[]} A list of objects containing the location and details of an incident
+    */
+    async getIncidents(startDate, endDate, border) {
+        try {
+            let incidents = await this.fetchIncidentData(moment(startDate, 'YYYY-MM-DD'),  moment(endDate, 'YYYY-MM-DD'), border);
+            return incidents;
         } catch(err) {
             console.log(err);
         }
