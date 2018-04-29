@@ -17,37 +17,37 @@
  IDs in an external API may not be reliable, and we will likely not be able to create or modify data
 */
 fakeDatabase = {
-  '5aa44da6b5a3087224a8029c': {
-    _id: "5aa44da6b5a3087224a8029c",
-    firstName: "Andrews",
-    lastName: "Patel",
-  },
-  '5aa44da66499f9d153992f21': {
-    _id: "5aa44da66499f9d153992f21",
-    firstName: "Conley",
-    lastName: "Lloyd",
-  },
-  '5aa44da685ecd7926bb96195': {
-    _id: "5aa44da685ecd7926bb96195",
-    firstName: "Edwards",
-    lastName: "Mcintosh",
-  },
-  '5aa44da6b743c6f16d11f8c0': {
-    _id: "5aa44da6b743c6f16d11f8c0",
-    firstName: "Brooke",
-    lastName: "Bailey",
-  },
-  '5aa44da6b2ce9d2d9757550e': {
-    _id: "5aa44da6b2ce9d2d9757550e",
-    firstName: "Golden",
-    lastName: "Bailey",
-  },
-  '5aa44da6efc0456f63a80bab': {
-    _id: "5aa44da6efc0456f63a80bab",
-    firstName: "Claudette",
-    lastName: "Leblanc",
-  },
-}
+    '5aa44da6b5a3087224a8029c': {
+        _id: '5aa44da6b5a3087224a8029c',
+        firstName: 'Andrews',
+        lastName: 'Patel',
+    },
+    '5aa44da66499f9d153992f21': {
+        _id: '5aa44da66499f9d153992f21',
+        firstName: 'Conley',
+        lastName: 'Lloyd',
+    },
+    '5aa44da685ecd7926bb96195': {
+        _id: '5aa44da685ecd7926bb96195',
+        firstName: 'Edwards',
+        lastName: 'Mcintosh',
+    },
+    '5aa44da6b743c6f16d11f8c0': {
+        _id: '5aa44da6b743c6f16d11f8c0',
+        firstName: 'Brooke',
+        lastName: 'Bailey',
+    },
+    '5aa44da6b2ce9d2d9757550e': {
+        _id: '5aa44da6b2ce9d2d9757550e',
+        firstName: 'Golden',
+        lastName: 'Bailey',
+    },
+    '5aa44da6efc0456f63a80bab': {
+        _id: '5aa44da6efc0456f63a80bab',
+        firstName: 'Claudette',
+        lastName: 'Leblanc',
+    },
+};
 
 /** Note: The parameters given here are only an example and will change depending on the functionality of the model
     Thrown exception messages may also vary between models as needed
@@ -79,13 +79,12 @@ exports.getAll = async (query) => {
     */
     exampleData = Object.values(fakeDatabase);
     // Filter our array to only those object that match every constraint passed in the query
-    return exampleData.filter(example => {
+    return exampleData.filter((example) => {
         // Not sure of the one-liner method to do this yet
         let matchesConstraints = true;
         Object.keys(query).every((queryKey) => {
             if (!(queryKey in example) || example[queryKey] !== query[queryKey]) {
                 matchesConstraints = false;
-                return;
             }
         });
         return matchesConstraints;

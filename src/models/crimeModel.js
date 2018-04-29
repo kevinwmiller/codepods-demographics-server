@@ -1,7 +1,7 @@
 /**
     @exports CrimeModel
     @file Manages crime data obtained from CrimeReports.com
-    
+
  *  @typedef  {Object} IncidentDetails
  *  @property {string} agency The name of the agency processing the incidents
  *  @property {string} agency_type The type of processing agency
@@ -15,7 +15,7 @@
  *  @property {string} incidentAddress The address the crime occurred at
  *  @property {string} incidentDescription Decription of the crim
  *  @property {Coordinate} location Location coordinates of the crime
- *  @property {string} primaryType 
+ *  @property {string} primaryType
  *  @property {string} timestamp Date and time the crime occurred
 
     @typedef {Object} Coordinate
@@ -39,7 +39,7 @@ const crimeReports = require('../apis/crimeReports');
  */
 exports.get = (startDate, endDate, border) => {
     if (!startDate || !endDate || !border || !border.topRight || !border.bottomLeft) {
-        throw {message: `Invalid parameters`};
+        throw new Error('Invalid parameters');
     }
     return crimeReports.getIncidents(startDate, endDate, border);
 };
