@@ -16,7 +16,7 @@
  The model would normally make a call to a real database or to an external API
  IDs in an external API may not be reliable, and we will likely not be able to create or modify data
 */
-fakeDatabase = {
+const fakeDatabase = {
     '5aa44da6b5a3087224a8029c': {
         _id: '5aa44da6b5a3087224a8029c',
         firstName: 'Andrews',
@@ -77,15 +77,16 @@ exports.getAll = async (query) => {
      If we were accessing a real database or an api, we could easily pass our constraints to it to handle the filtering
      However, since we only have an object here, we can manually filter our data
     */
-    exampleData = Object.values(fakeDatabase);
+    const exampleData = Object.values(fakeDatabase);
     // Filter our array to only those object that match every constraint passed in the query
     return exampleData.filter((example) => {
         // Not sure of the one-liner method to do this yet
         let matchesConstraints = true;
-        Object.keys(query).every((queryKey) => {
+        matchesConstraints = Object.keys(query).every((queryKey) => {
             if (!(queryKey in example) || example[queryKey] !== query[queryKey]) {
-                matchesConstraints = false;
+                return false;
             }
+            return true;
         });
         return matchesConstraints;
     });
