@@ -34,11 +34,4 @@ describe('Crime Endpoint', () => {
             done();
         });
     });
-    it('should return a 200 response', async () => {
-        chai.request(server)
-        .get('/crime')
-        .end((err, res) => {
-            expect(res).to.have.status(200);
-        });
-    });
 });
