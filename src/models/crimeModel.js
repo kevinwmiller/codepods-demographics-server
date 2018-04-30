@@ -39,7 +39,7 @@ const crimeReports = require('../apis/crimeReports');
  */
 exports.get = (startDate, endDate, border) => {
     if (!startDate || !endDate || !border || !border.topRight || !border.bottomLeft) {
-        throw new Error('Invalid parameters');
+        throw new Error(`Invalid parameters startDate: '${startDate}' endDate: '${endDate}' border: '${border}'`);
     }
     return crimeReports.getIncidents(startDate, endDate, border);
 };

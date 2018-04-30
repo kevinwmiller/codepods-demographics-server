@@ -18,8 +18,8 @@ router.get('/', async (req, res) => {
     try {
         res.json({ response: await crimeModel.get(req.query.startDate, req.query.endDate, req.query.border) });
     } catch (err) {
-        console.log(`Oops! ${err.message}`);
-        res.json({ error: err.message });
+        console.log(`${err.message}`);
+        res.send(422);
     }
 });
 
