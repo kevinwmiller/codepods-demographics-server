@@ -9,7 +9,7 @@
     "start-dev": "NODE_ENV=development && node ./node_modules/nodemon/bin/nodemon.js index.js -V -L",
     "start": "NODE_ENV=production node index.js",
     "doc": "node ./node_modules/esdoc/out/src/ESDocCLI.js",
-    "test": "node ./node_modules/mocha/bin/mocha src/test --recursive",
+    "test": "node ./node_modules/mocha/bin/mocha src/test --recursive --exit",
     "lint": "node ./node_modules/eslint/bin/eslint.js ."
   },
   "dependencies": {
