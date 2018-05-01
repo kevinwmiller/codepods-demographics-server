@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
 		  webserver.timezone.value = ":host"
 		end
 		
-		webserver.vm.provision :shell, path: "bootstrap-appserver.sh"
+		webserver.vm.provision :shell, path: "bootstrap-appserver.sh", privileged: false
 
 	end
 	
