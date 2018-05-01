@@ -5,11 +5,12 @@ sudo apt-get update
 # Install Git
 sudo apt-get install -y git
 
-# Install nodejs 9.x and npm 5.6
 cd ~
-curl -sL https://deb.nodesource.com/setup_9.x -o nodesource_setup.sh
-sudo bash nodesource_setup.sh
-sudo apt-get install -y nodejs 
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+nvm install 9
 
 # Install build-essential for npm packages
 sudo apt-get install -y build-essential
