@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
         res.json({ response: await crimeModel.get(req.query.startDate, req.query.endDate, req.query.border) });
     } catch (err) {
         console.log(`${err.message}`);
-        res.send(422);
+        res.sendStatus(422);
     }
 });
 

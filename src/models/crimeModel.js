@@ -38,7 +38,11 @@ const crimeReports = require('../apis/crimeReports');
  * @return     {IncidentDetails[]} A list of objects containing the location and details of an incident
  */
 exports.get = (startDate, endDate, border) => {
+    console.log(startDate);
+    console.log(endDate);
+    console.log(border);
     if (!startDate || !endDate || !border || !border.topRight || !border.bottomLeft) {
+        console.log(border.topRight)
         throw new Error(`Invalid parameters startDate: '${startDate}' endDate: '${endDate}' border: '${border}'`);
     }
     return crimeReports.getIncidents(startDate, endDate, border);
