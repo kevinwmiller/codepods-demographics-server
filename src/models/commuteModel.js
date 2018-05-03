@@ -42,16 +42,19 @@ function cacheCommuteData() {
 
 //return Json strign version of commute Object
 function commuteJSON(zipCode)
-{            
-    if (zipCode in commuteDictionary)
-        return { "_id" : zipCode, "zipCode":  zipCode,  "commuteTime" : commuteDictionary[zipCode] };
+{   
+    var numZip = Number(zipCode).toString(); 
+    var paddedZip = numZip.padStart(5, "0")      
+    if (numZip in commuteDictionary)
+        return { "_id" : paddedZip, "zipCode":  paddedZip,  "commuteTime" : commuteDictionary[numZip] };
 
-    throw new Error(`Could not find object with zipCode ${zipCode}`);
+    throw new Error(`Could not find object with zipCode ${paddedZip}`);
 };
 
 function commuteJSONExists(zipCode)
 {            
-    if (zipCode in commuteDictionary)
+    var numZip = Number(zipCode).toString(); 
+    if (numZip in commuteDictionary)
         return true;
 
     return false;
