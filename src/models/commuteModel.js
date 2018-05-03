@@ -16,7 +16,7 @@
  The model would normally make a call to a real database or to an external API
  IDs in an external API may not be reliable, and we will likely not be able to create or modify data
 */
-commuteDatabase = {
+commuteDatabase2 = {
     '21001': {
       zipCode: "21001",
       commuteTime: "100",
@@ -42,6 +42,24 @@ commuteDatabase = {
         commuteTime: "600",
       }, 
   }
+
+
+
+
+  commuteDatabase = {
+    "8600000US00601": { "zipCode":601, "census_display_label":"ZCTA5 00601", "commuteTime":28.7, "margin_of_error":3.1},
+    "8600000US00602": { "zipCode":602, "census_display_label":"ZCTA5 00602", "commuteTime":20.9, "margin_of_error":1.4},
+    "8600000US00603": { "zipCode":603, "census_display_label":"ZCTA5 00603", "commuteTime":20.3, "margin_of_error":1.4},
+    "8600000US00606": { "zipCode":606, "census_display_label":"ZCTA5 00606", "commuteTime":34.9, "margin_of_error":11.5},
+    "8600000US00610": { "zipCode":610, "census_display_label":"ZCTA5 00610", "commuteTime":26.4, "margin_of_error":1.5},
+    "8600000US00612": { "zipCode":612, "census_display_label":"ZCTA5 00612", "commuteTime":25.4, "margin_of_error":1.4},
+    "8600000US00616": { "zipCode":616, "census_display_label":"ZCTA5 00616", "commuteTime":24.8, "margin_of_error":2.4},
+    "8600000US00617": { "zipCode":617, "census_display_label":"ZCTA5 00617", "commuteTime":24.7, "margin_of_error":2},
+    "8600000US00622": { "zipCode":622, "census_display_label":"ZCTA5 00622", "commuteTime":24.4, "margin_of_error":4.3}
+  }
+
+  
+
 
 /** Note: The parameters given here are only an commute and will change depending on the functionality of the model
     Thrown exception messages may also vary between models as needed
@@ -71,6 +89,9 @@ exports.getAll = async (query) => {
      If we were accessing a real database or an api, we could easily pass our constraints to it to handle the filtering
      However, since we only have an object here, we can manually filter our data
     */
+
+
+
     commuteData = Object.values(commuteDatabase);
     // Filter our array to only those object that match every constraint passed in the query
     return commuteData.filter(commute => {
@@ -93,11 +114,50 @@ exports.getAll = async (query) => {
 */
 exports.get = async (id) => {
     console.log('CommuteModel get');
+
+    setup();
+
+    console.log('CommuteModel get');
+    
     if (id in commuteDatabase) {
         return commuteDatabase[id];
     }
     throw new Error(`Could not find object with ID ${id}`);
 };
+
+var dataloaded=0;
+var data;
+var dataDict={};
+function setup() {
+    if (dataloaded==0)
+    {
+        console.log('loading---------------');
+        dataloaded=1;
+        data = require ('./commuteData.json');
+    }
+  console.log(data);
+
+  for (i=0; i<data.length; i++){
+    console.log(data[i]["zip_code"] + ' ' + data[i]["commute_time_mins_est"]);
+  }
+
+
+var arr =data;
+var str = JSON.stringify(arr);  d
+//console.log(arr[0]); 
+
+var newArr = JSON.parse(str);  
+while (newArr.length > 0) {  
+    var line = newArr.pop(); 
+
+console.log(line); 
+
+}
+
+
+
+};
+  
 
 
 /**
