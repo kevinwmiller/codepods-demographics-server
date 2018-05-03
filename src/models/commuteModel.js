@@ -58,6 +58,45 @@ commuteDatabase2 = {
     "8600000US00622": { "zipCode":622, "census_display_label":"ZCTA5 00622", "commuteTime":24.4, "margin_of_error":4.3}
   }
 
+ 
+
+  //Debug messages to console
+var turnOnDebug=1;
+function consoleDebug(msg)
+{
+    if (turnOnDebug==1) console.log('>> '+msg);
+}
+
+//CacheCommuteData Global Vars and Function
+var commuteDataLoaded=0;
+var commuteDictionary={};
+function cacheCommuteData() {
+    if (commuteDataLoaded==0)
+    {
+        console.log('Setup: Caching commuteDictionary');
+        commuteDataLoaded=1;
+        var commuteDataJSON = require ('./commuteData.json');
+
+        //Build a dictionary with zip as key and commute as value
+        consoleDebug('Build Dictionary from json');
+        for (i=0; i<commuteDataJSON.length; i++){
+            consoleDebug(commuteDataJSON[i]["zip_code"] + ' ' + commuteDataJSON[i]["commute_time_mins_est"]);
+            commuteDictionary[commuteDataJSON[i]["zip_code"]] = commuteDataJSON[i]["commute_time_mins_est"];
+        };
+    }
+    for(var zipCode in commuteDictionary) {
+            consoleDebug(commuteJSON(zipCode));
+    }
+};
+
+//return Json strign version of commute Object
+function commuteJSON(zipCode)
+{            
+    var commTime = commuteDictionary[zipCode];
+    return ':***{"_id":'+zipCode+',"zipCode":'+ zipCode +',"commuteTime":'+commTime+'}';
+};
+
+
   
 
 
@@ -90,9 +129,8 @@ exports.getAll = async (query) => {
      However, since we only have an object here, we can manually filter our data
     */
 
-
-
     commuteData = Object.values(commuteDatabase);
+
     // Filter our array to only those object that match every constraint passed in the query
     return commuteData.filter(commute => {
         // Not sure of the one-liner method to do this yet
@@ -115,7 +153,7 @@ exports.getAll = async (query) => {
 exports.get = async (id) => {
     console.log('CommuteModel get');
 
-    setup();
+    cacheCommuteData();
 
     console.log('CommuteModel get');
     
@@ -125,39 +163,7 @@ exports.get = async (id) => {
     throw new Error(`Could not find object with ID ${id}`);
 };
 
-var dataloaded=0;
-var data;
-var dataDict={};
-function setup() {
-    if (dataloaded==0)
-    {
-        console.log('loading---------------');
-        dataloaded=1;
-        data = require ('./commuteData.json');
-    }
-  console.log(data);
 
-  for (i=0; i<data.length; i++){
-    console.log(data[i]["zip_code"] + ' ' + data[i]["commute_time_mins_est"]);
-  }
-
-
-var arr =data;
-var str = JSON.stringify(arr);  d
-//console.log(arr[0]); 
-
-var newArr = JSON.parse(str);  
-while (newArr.length > 0) {  
-    var line = newArr.pop(); 
-
-console.log(line); 
-
-}
-
-
-
-};
-  
 
 
 /**
