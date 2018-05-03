@@ -1,0 +1,65 @@
+[
+    {
+        "census_GEO_id":  "8600000US00601",
+        "zip_code":  "601",
+        "census_display_label":  "ZCTA5 00601",
+        "commute_time_mins_est":  "28.7",
+        "margin_of_error":  "3.1"
+    },
+    {
+        "census_GEO_id":  "8600000US00602",
+        "zip_code":  "602",
+        "census_display_label":  "ZCTA5 00602",
+        "commute_time_mins_est":  "20.9",
+        "margin_of_error":  "1.4"
+    },
+    {
+        "census_GEO_id":  "8600000US00603",
+        "zip_code":  "603",
+        "census_display_label":  "ZCTA5 00603",
+        "commute_time_mins_est":  "20.3",
+        "margin_of_error":  "1.4"
+    },
+    {
+        "census_GEO_id":  "8600000US00606",
+        "zip_code":  "606",
+        "census_display_label":  "ZCTA5 00606",
+        "commute_time_mins_est":  "34.9",
+        "margin_of_error":  "11.5"
+    },
+    {
+        "census_GEO_id":  "8600000US00610",
+        "zip_code":  "610",
+        "census_display_label":  "ZCTA5 00610",
+        "commute_time_mins_est":  "26.4",
+        "margin_of_error":  "1.5"
+    },
+    {
+        "census_GEO_id":  "8600000US00612",
+        "zip_code":  "612",
+        "census_display_label":  "ZCTA5 00612",
+        "commute_time_mins_est":  "25.4",
+        "margin_of_error":  "1.4"
+    },
+    {
+        "census_GEO_id":  "8600000US00616",
+        "zip_code":  "616",
+        "census_display_label":  "ZCTA5 00616",
+        "commute_time_mins_est":  "24.8",
+        "margin_of_error":  "2.4"
+    },
+    {
+        "census_GEO_id":  "8600000US00617",
+        "zip_code":  "617",
+        "census_display_label":  "ZCTA5 00617",
+        "commute_time_mins_est":  "24.7",
+        "margin_of_error":  "2"
+    },
+    {
+        "census_GEO_id":  "8600000US00622",
+        "zip_code":  "622",
+        "census_display_label":  "ZCTA5 00622",
+        "commute_time_mins_est":  "24.4",
+        "margin_of_error":  "4.3"
+    }
+]
