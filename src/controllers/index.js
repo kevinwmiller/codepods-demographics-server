@@ -10,6 +10,7 @@ const router = express.Router();
 
 router.use('/example', require('./exampleController'));
 router.use('/crime', require('./crimeController'));
+router.use('/income', require('./incomeController'));
 
 /** Routes can be defined here, but ideally they would be inside of controllers */
 router.get('/', (req, res) => {
