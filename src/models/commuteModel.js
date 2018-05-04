@@ -8,8 +8,12 @@
 
  */
 
-// Axios would be used if the model made an API call
-// const axios = require('axios');
+/**
+ *  include the Commute Time by Zip Code JSON DB
+ *      the JSON was built from the 2006-2011 U.S. Census American Community Survey 5-year estimates. 
+ *      and was downladed as a CSV file from https://data.world/scxt/commute-times-by-zipcode
+ */
+var commuteData = require ('../modeldata/commuteData.json');
 
 
 /** 
@@ -22,52 +26,44 @@ function consoleDebug(msg)
 };
 
 
-/** 
-    CacheCommuteData Global Vars and Function
-*/
-var commuteDataLoaded=0;   
-var commuteDictionary={};
-function cacheCommuteData() {
-    if (commuteDataLoaded==0)
-    {
-        console.log('Setup: Caching commuteDictionary');
-        commuteDataLoaded=1;
-        var commuteDataJSON = require ('../modeldata/commuteData.json');
-
-        //Build a dictionary with zip as key and commute as value
-        consoleDebug('Build Dictionary from json');
-        for (i=0; i<commuteDataJSON.length; i++){
-            consoleDebug(commuteDataJSON[i]["zip_code"] + ' ' + commuteDataJSON[i]["commute_time_mins_est"]);
-            commuteDictionary[commuteDataJSON[i]["zip_code"]] = commuteDataJSON[i]["commute_time_mins_est"];
-        };
-    }
-
-};
-
 /**
  *  return Json strign version of commute Object
  */
 function commuteJSON(zipCode)
-{   
-    var numZip = Number(zipCode).toString(); 
-    var paddedZip = numZip.padStart(5, "0")      
-    if (numZip in commuteDictionary)
-        return { "_id" : paddedZip, "zipCode":  paddedZip,  "commuteTime" : commuteDictionary[numZip] };
+{ 
+    var lookupZip = Number(zipCode).toString(); //zip code in db is non-zero padded number
 
-    throw new Error(`Could not find object with zipCode ${paddedZip}`);
+    var index = indexByZipCode(lookupZip);
+    if (index<0)
+        throw new Error(`Could not find object with zipCode ${lookupZip.padStart(5, "0")}`);
+
+    var commuteItem = commuteData.find( x => x.zip_code === lookupZip );
+    var paddedZip = commuteItem.zip_code.padStart(5, "0")   
+    var commuteTime = commuteItem.commute_time_mins_est;
+
+    return { "_id" : paddedZip, "zipCode":  paddedZip,  "commuteTime" : commuteTime };
 };
 
 /**
- *  is the Zip Code in the commuteDatabase
+ *  is the Zip Code in commuteData?
  */
 function commuteJSONExists(zipCode)
 {            
-    var numZip = Number(zipCode).toString(); 
-    if (numZip in commuteDictionary)
+    if (indexByZipCode(zipCode) > 0 )
         return true;
-
+    
     return false;
 };
+
+
+/**
+ *  is the Zip Code in commuteData?
+ */
+function indexByZipCode(zipCode)
+{            
+    return commuteData.findIndex(x  => x.zip_code === zipCode);
+};
+
 
 
 /** Note: The parameters given here are only an commute and will change depending on the functionality of the model
@@ -99,8 +95,6 @@ exports.getAll = async (query) => {
      However, since we only have an object here, we can manually filter our data
     */
 
-   cacheCommuteData();
-
     //since i was not sure of the performace of searching a large JSON object
     //I opted to build a dictionary tying the commute time (value) to each zip (key)
     //
@@ -128,12 +122,7 @@ exports.getAll = async (query) => {
 */
 exports.get = async (id) => {
     console.log('CommuteModel get');
-
-    cacheCommuteData();
     return commuteJSON(id);
-
-    throw new Error(`Could not find object with zipCode ${zipCode}`);
-
 };
 
 
