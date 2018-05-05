@@ -1,7 +1,6 @@
 /**
     @exports CommuteModel
-    @file Manages commute data obtained from https://data.world/scxt/commute-times-by-zipcode
-
+    @file Manages commute time and zip code data from various data sources
     @typedef {Object} CommuteDetails
     @property {string} zipCode the zip code of interest
     @property {string} commuteTime commute time (in minutes) for the zip code
@@ -12,16 +11,22 @@
  *  include commuteData_CensusGov.json >> Commute Time by Zip Code JSON DB
  *      the JSON was built from the 2006-2011 U.S. Census American Community Survey 5-year estimates. 
  *      and was downladed as a CSV file from https://data.world/scxt/commute-times-by-zipcode
- *  found two additional DBs that tie zipcodes to map cooridinates:
+
+ */
+const commuteData = require ('../modeldata/commuteData_CensusGov.json');
+
+/**
+ *  Using two  DBs that tie zipcodes to map cooridinates:
  *      zipCodeData_CensusGov.json  from: www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip     
  *          this version has zip, state, county, and long/lat     
  *      zipCodeData_GeoCommons.json from: https://www.google.com/fusiontables/DataSource?docid=1fzwSGnxD0xzJaiYXYX66zuYvG0c5wcEUi5ZI0Q
  *          this version has additional info including geometry information that defines the outline of the zipcode
  * 
  *  the three files DO NOT all have the same zipcodes so, we will be using all three to find out info for any zip
- *  and we will expect that for some zips, we wont have commute and/or map coordinates and/or geometry info
+ *  and we will expect that for some zips, we wont have ZipCode and/or map coordinates and/or geometry info
  */
-const commuteData = require ('../modeldata/commuteData_CensusGov.json');
+const ZipCodeData_NoGemetry= require ('../modeldata/ZipCodeData_CensusGov.json');
+const ZipCodeData_Geometry = require ('../modeldata/ZipCodeData_GeoCommons.json');
 
 
 /**
@@ -35,12 +40,22 @@ function CommuteDetailsbyZipCode(zipCode)
     var keyZipCode = trimZipCode(zipCode);
     var paddedZipCode = padZipCode(keyZipCode);
     
+    // get commute time
     var commuteTime = ''; //default to blank if zip not found in DB
     if (indexByZipCode(keyZipCode) >= 0)
     {
         var commuteItem = commuteData.find( x => x.zip_code === keyZipCode );
         commuteTime = commuteItem.commute_time_mins_est;
     }
+/*
+    //Now add additional map coordinates and other details from the nonGeometric ZipCode DB
+    var commuteTime = ''; //default to blank if zip not found in DB
+    if (indexByZipCode(keyZipCode) >= 0)
+    {
+        var commuteItem = commuteData.find( x => x.zip_code === keyZipCode );
+        commuteTime = commuteItem.commute_time_mins_est;
+    }
+*/
 
     return { "zipCode":  paddedZipCode,  "commuteTime" : commuteTime };
 };
