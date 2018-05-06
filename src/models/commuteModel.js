@@ -13,7 +13,9 @@
  *      and was downladed as a CSV file from https://data.world/scxt/commute-times-by-zipcode
 
  */
-const commuteData = require ('../modeldata/commuteData_CensusGov.json');
+
+const commuteDataFile = require('../modeldata/commuteData_CensusGov.js');
+const commuteData = commuteDataFile.getData();
 
 /**
  *  Using two  DBs that tie zipcodes to map cooridinates:
@@ -25,9 +27,12 @@ const commuteData = require ('../modeldata/commuteData_CensusGov.json');
  *  the three files DO NOT all have the same zipcodes so, we will be using all three to find out info for any zip
  *  and we will expect that for some zips, we wont have ZipCode and/or map coordinates and/or geometry info
  */
-const ZipCodeData_NoGeometry= require ('../modeldata/ZipCodeData_CensusGov.json');
-const ZipCodeData_Geometry = require ('../modeldata/ZipCodeData_GeoCommons.json');
 
+const zipCodeData_NoGeometryFile = require('../modeldata/ZipCodeData_CensusGov.js');
+const zipCodeData_NoGeometry = zipCodeData_NoGeometryFile.getData();
+
+const zipCodeData_GeometryFile = require('../modeldata/ZipCodeData_GeoCommons.js');
+const ZipCodeData_Geometry = zipCodeData_GeometryFile.getData();
 
 /**
  *  return Json strign version of commute Object
@@ -61,7 +66,7 @@ function CommuteDetailsbyZipCode(zipCode)
         kmlBoundary = dataItem.kmlBoundary;
     }
 
-    dataItem = ZipCodeData_NoGeometry.find( x => x.zipCode === keyZipCode );
+    dataItem = zipCodeData_NoGeometry.find( x => x.zipCode === keyZipCode );
     if (dataItem!=undefined) {
         if (latitude=='') latitude = dataItem.latitude;
         if (longitude=='') longitude = dataItem.longitude;
@@ -152,7 +157,37 @@ exports.getAll =  (zipCode) => {
  */
 exports.get = (zipCode) => {
     console.log('CommuteModel get zipCode = '+ zipCode);
+
+    if (zipCode=='runtests')
+        return runTests();
+    
     return CommuteDetailsbyZipCode(zipCode);
 };
 
+function runTests()
+{
+    console.log('Testing');
 
+    var results = [];
+    var zipCode;
+   
+    zipCode =0;
+    results.push('--------------------');
+    results.push('CommuteDetailsbyZipCode '+zipCode);
+    results.push(CommuteDetailsbyZipCode(zipCode));
+    results.push('--------------------');
+
+    zipCode =12;
+    results.push('--------------------');
+    results.push('CommuteDetailsbyZipCode '+zipCode);
+    results.push(CommuteDetailsbyZipCode(zipCode));
+    results.push('--------------------');
+
+    zipCode =501;
+    results.push('--------------------');
+    results.push('CommuteDetailsbyZipCode '+zipCode);
+    results.push(CommuteDetailsbyZipCode(zipCode));
+    results.push('--------------------');
+
+    return results;
+}
