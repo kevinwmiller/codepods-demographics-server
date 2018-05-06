@@ -25,7 +25,7 @@ const commuteData = require ('../modeldata/commuteData_CensusGov.json');
  *  the three files DO NOT all have the same zipcodes so, we will be using all three to find out info for any zip
  *  and we will expect that for some zips, we wont have ZipCode and/or map coordinates and/or geometry info
  */
-const ZipCodeData_NoGemetry= require ('../modeldata/ZipCodeData_CensusGov.json');
+const ZipCodeData_NoGeometry= require ('../modeldata/ZipCodeData_CensusGov.json');
 const ZipCodeData_Geometry = require ('../modeldata/ZipCodeData_GeoCommons.json');
 
 
@@ -38,26 +38,43 @@ function CommuteDetailsbyZipCode(zipCode)
         throw new Error('ZipCode "'+ zipCode + '" Is not a valid zip');     
 
     var keyZipCode = trimZipCode(zipCode);
-    var paddedZipCode = padZipCode(keyZipCode);
-    
-    // get commute time
-    var commuteTime = ''; //default to blank if zip not found in DB
-    if (indexByZipCode(keyZipCode) >= 0)
-    {
-        var commuteItem = commuteData.find( x => x.zip_code === keyZipCode );
-        commuteTime = commuteItem.commute_time_mins_est;
-    }
-/*
-    //Now add additional map coordinates and other details from the nonGeometric ZipCode DB
-    var commuteTime = ''; //default to blank if zip not found in DB
-    if (indexByZipCode(keyZipCode) >= 0)
-    {
-        var commuteItem = commuteData.find( x => x.zip_code === keyZipCode );
-        commuteTime = commuteItem.commute_time_mins_est;
-    }
-*/
 
-    return { "zipCode":  paddedZipCode,  "commuteTime" : commuteTime };
+    //Default all vars to default state
+    var paddedZipCode = padZipCode(keyZipCode);
+    var commuteTime= '';
+    var latitude = '';
+    var longitude = '';
+    var placeName = '';
+    var area = '';
+    var kmlBoundary = '';
+    var dataItem;
+    console.log('-----------------------------------------------');
+    // get commute time
+    dataItem = commuteData.find( x => x.zipCode === keyZipCode );
+    commuteTime = (dataItem==undefined) ? '' : dataItem.commuteTimeMinsEst;
+
+    dataItem = ZipCodeData_Geometry.find( x => x.zipCode === keyZipCode );
+    if (dataItem!=undefined) {
+        latitude = dataItem.latitude;
+        longitude = dataItem.longitude;
+        placeName = dataItem.placeName.toProperCase();
+        area = dataItem.area;
+        kmlBoundary = dataItem.kmlBoundary;
+    }
+
+    dataItem = ZipCodeData_NoGeometry.find( x => x.zipCode === keyZipCode );
+    if (dataItem!=undefined) {
+        if (latitude=='') latitude = dataItem.latitude;
+        if (longitude=='') longitude = dataItem.longitude;
+        if (placeName=='') placeName = dataItem.placeName;
+    }
+
+    return { "zipCode" : paddedZipCode,  
+             "commuteTime" : commuteTime, 
+             "location" : { "latitude" : latitude, "longitude":  longitude }, 
+             "placeName" : placeName, "area" : area,
+             "kmlBoundary" : kmlBoundary 
+            };
 };
 
 function isValidUSZip(zipCode) {
@@ -85,9 +102,9 @@ function padZipCode(zipCode)
 /**
  *  is the Zip Code in commuteData?
  */
-function existsByZipCode(zipCode)
+function existsByZipCode(data, zipCode)
 {       
-    if (indexByZipCode(zipCode) >= 0 )
+    if (indexByZipCode(data, zipCode) >= 0 )
         return true;
 
     return false;
@@ -96,9 +113,13 @@ function existsByZipCode(zipCode)
 /**
  *  is the Zip Code in commuteData?
  */
-function indexByZipCode(zipCode)
-{            
-    return commuteData.findIndex(x  => x.zip_code === zipCode);
+function indexByZipCode(data, zipCode)
+{        
+    return data.findIndex(x  => x.zip_code === zipCode);
+};
+
+String.prototype.toProperCase = function () {
+    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 };
 
 /**
