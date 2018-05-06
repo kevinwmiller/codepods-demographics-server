@@ -48,8 +48,7 @@ function CommuteDetailsbyZipCode(zipCode)
     var area = '';
     var kmlBoundary = '';
     var dataItem;
-    console.log('-----------------------------------------------');
-    // get commute time
+ 
     dataItem = commuteData.find( x => x.zipCode === keyZipCode );
     commuteTime = (dataItem==undefined) ? '' : dataItem.commuteTimeMinsEst;
 
