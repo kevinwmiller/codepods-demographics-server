@@ -35,9 +35,9 @@ const zipCodeData_GeometryFile = require('../modeldata/ZipCodeData_GeoCommons.js
 const ZipCodeData_Geometry = zipCodeData_GeometryFile.getData();
 
 /**
- *  return Json strign version of commute Object
+ *  return Json strign version of commute Object based on zipCode
  */
-function CommuteDetailsbyZipCode(zipCode)
+function getCommuteDetailsbyZipCode(zipCode)
 {
     if (!isValidUSZip(zipCode))
         throw new Error('ZipCode "'+ zipCode + '" Is not a valid zip');     
@@ -61,24 +61,79 @@ function CommuteDetailsbyZipCode(zipCode)
     if (dataItem!=undefined) {
         latitude = dataItem.latitude;
         longitude = dataItem.longitude;
-        placeName = dataItem.placeName.toProperCase();
-        area = dataItem.area;
-        kmlBoundary = dataItem.kmlBoundary;
+ //       placeName = dataItem.placeName.toProperCase();
+ //       area = dataItem.area;
+ //       kmlBoundary = dataItem.kmlBoundary;
     }
 
     dataItem = zipCodeData_NoGeometry.find( x => x.zipCode === keyZipCode );
     if (dataItem!=undefined) {
         if (latitude=='') latitude = dataItem.latitude;
         if (longitude=='') longitude = dataItem.longitude;
-        if (placeName=='') placeName = dataItem.placeName;
+//        if (placeName=='') placeName = dataItem.placeName;
     }
 
     return { "zipCode" : paddedZipCode,  
              "commuteTime" : commuteTime, 
              "location" : { "latitude" : latitude, "longitude":  longitude }, 
-             "placeName" : placeName, "area" : area,
-             "kmlBoundary" : kmlBoundary 
+//             "placeName" : placeName, "area" : area
+//            "kmlBoundary" : kmlBoundary 
             };
+};
+
+/**
+ *  return Json strign version of commute Object based on rectangular map boundary coordinates
+ */
+function getCommuteDetailByMapBounds(smallestLat, smallestLng, largestLat, largestLng)
+{  
+    if (!isMapBoundaryArgumentDefined(smallestLat, smallestLng, largestLat, largestLng))
+        throw new Error('Missing Map Bounds argumments');    
+        
+    // Create an array that contains the string  
+    // values that are in the original array.  
+ 
+    var foundZips1 = zipCodeData_NoGeometry.filter(  
+        function (value) {  
+            return (
+                   Number(value.latitude) >= Number(smallestLat) 
+                && Number(value.latitude) <= Number(largestLat)
+                && Number(value.longitude) >= Number(smallestLng)
+                && Number(value.longitude) <= Number(largestLng)
+            );  
+        });
+
+
+    var foundZips2 = ZipCodeData_Geometry.filter(  
+        function (value) {  
+            return (
+                    Number(value.latitude) >= Number(smallestLat) 
+                && Number(value.latitude) <= Number(largestLat)
+                && Number(value.longitude) >= Number(smallestLng)
+                && Number(value.longitude) <= Number(largestLng)
+            );  
+        });
+    
+    //for now....until I merge the two (if time) pick the result that is larger (in case both dont have any zips undefined
+    //if i have time, I will merge the two sources that have map coordinats for zips -- but either one will work for now
+  
+    var foundZips;
+    var result = [];
+    
+    foundZips = foundZips1;
+    for (var i = 0; i< foundZips.length; i++) {
+            console.log(foundZips[i].zipCode);
+            result.push(getCommuteDetailsbyZipCode(foundZips[i].zipCode));
+    }
+
+    foundZips = foundZips2;
+    for (var i = 0; i< foundZips.length; i++) {
+            console.log(foundZips[i].zipCode);
+            result.push(getCommuteDetailsbyZipCode(foundZips[i].zipCode));
+    }
+    
+    //////// ---- we shouuld probably expand the map area to make sure we get zips that cross the boundaries
+
+    return result;
 };
 
 function isValidUSZip(zipCode) {
@@ -126,28 +181,88 @@ String.prototype.toProperCase = function () {
     return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 };
 
+
+/**
+ *  Are map boundary coordinates supplied (must be all 4)
+ */
+function isMapBoundaryArgumentDefined(smallestLat, smallestLng, largestLat, largestLng)
+{  
+    console.log('isMapBoundaryArgumentDefined (('+ smallestLat+ ',' + smallestLng + '),(' +largestLat + ',' + largestLng + '))');
+
+    //only support if rectangle is given
+    args = 0;
+    if (smallestLat!=undefined) args++;
+    if (smallestLng!=undefined) args++;
+    if (largestLat!=undefined) args++;
+    if (largestLng!=undefined) args++;
+
+    if (args >0 && args <4)
+       throw new Error('Missing '+ (4-args) +' of 4 Map Bounds argumments');
+
+    if (args == 4) return true
+       
+    return false;
+};
+
+/**
+ *  is zipCode supplied supplied (must be all 4)
+ */
+function isZipCodeArgumentDefined(zipCode)
+{
+    console.log('isZipCodeArgumentDefined (' + zipCode + ')');
+
+    if (zipCode==undefined)
+        return false;
+
+    return true;
+};
+
 /**
  * Requests crime data for a given border area from CrimeReports.com
  *
  * @param      {string}  zipcode  a single zipcode or an array of zipcodes
+ * @param      {string}  zipCosmallestLat map boundary coordinate 
+ * @param      {string}  smallestLng map boundary coordinate 
+ * @param      {string}  largestLat map boundary coordinate 
+ * @param      {string}  largestLngde map boundary coordinate 
  * @return     {CommuteDetails[]} A list of objects containing commute details for the zipcode(s)
  */
-exports.getAll =  (zipCode) => {
-    console.log('CommuteModel getAll zipCode = '+ zipCode);
+exports.getAll =  (zipCode, smallestLat, smallestLng, largestLat, largestLng) => {
+    console.log('CommuteModel getAll zipCode= '+ zipCode + ' smallestLat ' + smallestLat
+        + ' smallestLng ' + smallestLng +   ' largestLat ' + largestLat +   ' largestLng ' + largestLng);
 
+    var byZipCode = isZipCodeArgumentDefined(zipCode);
+    var byMapBoundary = isMapBoundaryArgumentDefined(smallestLat, smallestLng, largestLat, largestLng);
     var result=[];
 
-    if (Array.isArray(zipCode)) {
-        for (var i = 0; i < zipCode.length; i++) {
-            result.push(CommuteDetailsbyZipCode(zipCode[i]));
+    if  (byZipCode && byMapBoundary)
+                throw new Error('Cannot lookup by BOTH ZipCode And Map Boundary Coordinates');
+
+    if  (byMapBoundary)
+    {
+        result = getCommuteDetailByMapBounds(smallestLat, smallestLng, largestLat, largestLng);
+
+        for (var i = 0; i< result.length; i++) {
+            console.log(result[i])  ;
         }
-    } else {
-        result.push(CommuteDetailsbyZipCode(zipCode));
+        return result;
     }
 
-    return result;
-};
+    if  (byZipCode)
+    {
+        if (Array.isArray(zipCode)) {
+            for (var i = 0; i < zipCode.length; i++) {
+                result.push(getCommuteDetailsbyZipCode(zipCode[i]));
+            }
+        } else {
+            result.push(getCommuteDetailsbyZipCode(zipCode));
+        }
 
+        return result;
+    }
+
+    throw new Error('No Lookup criteria provided');
+};
 
 /**
  * Requests crime data for a given border area from CrimeReports.com
@@ -158,10 +273,17 @@ exports.getAll =  (zipCode) => {
 exports.get = (zipCode) => {
     console.log('CommuteModel get zipCode = '+ zipCode);
 
-    if (zipCode=='runtests')
-        return runTests();
+    var byZipCode = isZipCodeArgumentDefined(zipCode);
+
+    if  (byZipCode)
+    {
+        if (zipCode=='runtests')
+            return runTests();
     
-    return CommuteDetailsbyZipCode(zipCode);
+        return getCommuteDetailsbyZipCode(zipCode);
+    }
+
+    throw new Error('No zipCode provided');
 };
 
 function runTests()
@@ -170,23 +292,26 @@ function runTests()
 
     var results = [];
     var zipCode;
-   
+
+//    smallestLat=39.50565195608165&smallestLng=-76.44096927896987&largestLat=39.57184407992466&largestLng=-76.28149585978042
+//    smallestLat=39.50565195608165 smallestLng=-76.44096927896987 largestLat=39.57184407992466 largestLng=-76.28149585978042
+
     zipCode =0;
     results.push('--------------------');
-    results.push('CommuteDetailsbyZipCode '+zipCode);
-    results.push(CommuteDetailsbyZipCode(zipCode));
+    results.push('getCommuteDetailsbyZipCode '+zipCode);
+    results.push(getCommuteDetailsbyZipCode(zipCode));
     results.push('--------------------');
 
     zipCode =12;
     results.push('--------------------');
-    results.push('CommuteDetailsbyZipCode '+zipCode);
-    results.push(CommuteDetailsbyZipCode(zipCode));
+    results.push('getCommuteDetailsbyZipCode '+zipCode);
+    results.push(getCommuteDetailsbyZipCode(zipCode));
     results.push('--------------------');
 
     zipCode =501;
     results.push('--------------------');
-    results.push('CommuteDetailsbyZipCode '+zipCode);
-    results.push(CommuteDetailsbyZipCode(zipCode));
+    results.push('getCommuteDetailsbyZipCode '+zipCode);
+    results.push(getCommuteDetailsbyZipCode(zipCode));
     results.push('--------------------');
 
     return results;
