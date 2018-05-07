@@ -102,7 +102,6 @@ function getCommuteDetailByMapBounds(smallestLat, smallestLng, largestLat, large
             );  
         });
 
-
     var foundZips2 = ZipCodeData_Geometry.filter(  
         function (value) {  
             return (
@@ -112,25 +111,22 @@ function getCommuteDetailByMapBounds(smallestLat, smallestLng, largestLat, large
                 && Number(value.longitude) <= Number(largestLng)
             );  
         });
-    
-    //for now....until I merge the two (if time) pick the result that is larger (in case both dont have any zips undefined
-    //if i have time, I will merge the two sources that have map coordinats for zips -- but either one will work for now
-  
+
     var foundZips;
     var result = [];
     
     foundZips = foundZips1;
     for (var i = 0; i< foundZips.length; i++) {
-            console.log(foundZips[i].zipCode);
             result.push(getCommuteDetailsbyZipCode(foundZips[i].zipCode));
     }
 
     foundZips = foundZips2;
     for (var i = 0; i< foundZips.length; i++) {
-            console.log(foundZips[i].zipCode);
-            result.push(getCommuteDetailsbyZipCode(foundZips[i].zipCode));
+            if (!existsByZipCode(result, foundZips[i].zipCode)) {
+                result.push(getCommuteDetailsbyZipCode(foundZips[i].zipCode));
+            }
     }
-    
+
     //////// ---- we shouuld probably expand the map area to make sure we get zips that cross the boundaries
 
     return result;
@@ -162,7 +158,7 @@ function padZipCode(zipCode)
  *  is the Zip Code in commuteData?
  */
 function existsByZipCode(data, zipCode)
-{       
+{     
     if (indexByZipCode(data, zipCode) >= 0 )
         return true;
 
@@ -174,7 +170,7 @@ function existsByZipCode(data, zipCode)
  */
 function indexByZipCode(data, zipCode)
 {        
-    return data.findIndex(x  => x.zip_code === zipCode);
+    return data.findIndex(x  => x.zipCode === zipCode);
 };
 
 String.prototype.toProperCase = function () {
@@ -187,8 +183,6 @@ String.prototype.toProperCase = function () {
  */
 function isMapBoundaryArgumentDefined(smallestLat, smallestLng, largestLat, largestLng)
 {  
-    console.log('isMapBoundaryArgumentDefined (('+ smallestLat+ ',' + smallestLng + '),(' +largestLat + ',' + largestLng + '))');
-
     //only support if rectangle is given
     args = 0;
     if (smallestLat!=undefined) args++;
@@ -209,8 +203,6 @@ function isMapBoundaryArgumentDefined(smallestLat, smallestLng, largestLat, larg
  */
 function isZipCodeArgumentDefined(zipCode)
 {
-    console.log('isZipCodeArgumentDefined (' + zipCode + ')');
-
     if (zipCode==undefined)
         return false;
 
@@ -241,10 +233,6 @@ exports.getAll =  (zipCode, smallestLat, smallestLng, largestLat, largestLng) =>
     if  (byMapBoundary)
     {
         result = getCommuteDetailByMapBounds(smallestLat, smallestLng, largestLat, largestLng);
-
-        for (var i = 0; i< result.length; i++) {
-            console.log(result[i])  ;
-        }
         return result;
     }
 
