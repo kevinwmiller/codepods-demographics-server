@@ -50,6 +50,8 @@ function getCommuteDetailsbyZipCode(zipCode)
     let commuteTime= '';
     let latitude = '';
     let longitude = '';
+    let state='';
+    let county='';
     // let placeName = '';
     // let area = '';
     // let kmlBoundary = '';
@@ -61,6 +63,7 @@ function getCommuteDetailsbyZipCode(zipCode)
     if (dataItem) {
         latitude = dataItem.latitude;
         longitude = dataItem.longitude;
+        state = dataItem.state;
         // placeName = dataItem.placeName.toProperCase();
         // area = dataItem.area;
         // kmlBoundary = dataItem.kmlBoundary;
@@ -74,6 +77,10 @@ function getCommuteDetailsbyZipCode(zipCode)
         if (!longitude) {
             longitude = dataItem.longitude;
         }
+        if (!state) {
+            state = dataItem.state;
+        }
+        county = dataItem.county;
     }
 
     return { 
@@ -83,6 +90,8 @@ function getCommuteDetailsbyZipCode(zipCode)
             latitude,
             longitude
         },
+        state : state,
+        county : county,
         // placeName,
         // area,
         // kmlBoundary,
