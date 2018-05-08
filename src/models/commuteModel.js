@@ -27,9 +27,9 @@ const commuteData = require('../modeldata/commuteData_CensusGov');
  *  and we will expect that for some zips, we wont have ZipCode and/or map coordinates and/or geometry info
  */
 
-const zipCodeData_NoGeometry = require('../modeldata/ZipCodeData_CensusGov');
+const zipCodeData_NoGeometry = require('../modeldata/zipCodeData_CensusGov');
 
-const ZipCodeData_Geometry = require('../modeldata/ZipCodeData_GeoCommons');
+const ZipCodeData_Geometry = require('../modeldata/zipCodeData_GeoCommons');
 
 
 /**
