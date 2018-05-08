@@ -1,6 +1,6 @@
 /**
     @exports CommuteModel
-    @file Manages commute time and zip code data from various data sources
+    @file Manages commute time and zip code data from constious data sources
     @typedef {Object} CommuteDetails
     @property {string} zipCode the zip code of interest
     @property {string} commuteTime commute time (in minutes) for the zip code
@@ -14,8 +14,7 @@
 
  */
 
-const commuteDataFile = require('../modeldata/commuteData_CensusGov.js');
-const commuteData = commuteDataFile.getData();
+const commuteData = require('../modeldata/commuteData_CensusGov');
 
 /**
  *  Using two  DBs that tie zipcodes to map cooridinates:
@@ -28,78 +27,91 @@ const commuteData = commuteDataFile.getData();
  *  and we will expect that for some zips, we wont have ZipCode and/or map coordinates and/or geometry info
  */
 
-const zipCodeData_NoGeometryFile = require('../modeldata/ZipCodeData_CensusGov.js');
-const zipCodeData_NoGeometry = zipCodeData_NoGeometryFile.getData();
+const zipCodeData_NoGeometry = require('../modeldata/ZipCodeData_CensusGov');
 
-const zipCodeData_GeometryFile = require('../modeldata/ZipCodeData_GeoCommons.js');
-const ZipCodeData_Geometry = zipCodeData_GeometryFile.getData();
+const ZipCodeData_Geometry = require('../modeldata/ZipCodeData_GeoCommons');
+
 
 /**
- *  return Json strign version of commute Object based on zipCode
+ * Gets the commute details by zip code.
+ *
+ * @param      {Function}  zipCode  The zip code
+ * @return     {Object}    The commute details by zip code.
  */
 function getCommuteDetailsbyZipCode(zipCode)
 {
     if (!isValidUSZip(zipCode))
-        throw new Error(`Invalid paramter: zipCode '${zipCode}'` );     
+        throw new Error(`Invalid parameter: zipCode '${zipCode}'` );     
 
-    var keyZipCode = trimZipCode(zipCode);
+    // const keyZipCode = normalizeZipCode(zipCode);
+    const keyZipCode = trimZipCode(zipCode);
 
-    //Default all vars to default state
-    var paddedZipCode = padZipCode(keyZipCode);
-    var commuteTime= '';
-    var latitude = '';
-    var longitude = '';
-    var placeName = '';
-    var area = '';
-    var kmlBoundary = '';
-    var dataItem;
+    //Default all consts to default state
+    let commuteTime= '';
+    let latitude = '';
+    let longitude = '';
+    // let placeName = '';
+    // let area = '';
+    // let kmlBoundary = '';
  
-    dataItem = commuteData.find( x => x.zipCode === keyZipCode );
-    commuteTime = (dataItem==undefined) ? '' : dataItem.commuteTimeMinsEst;
+    let dataItem = commuteData.find( x => x.zipCode === keyZipCode );
+    commuteTime = (dataItem) ? dataItem.commuteTimeMinsEst : '';
 
     dataItem = ZipCodeData_Geometry.find( x => x.zipCode === keyZipCode );
-    if (dataItem!=undefined) {
+    if (dataItem) {
         latitude = dataItem.latitude;
         longitude = dataItem.longitude;
- //       placeName = dataItem.placeName.toProperCase();
- //       area = dataItem.area;
- //       kmlBoundary = dataItem.kmlBoundary;
+        // placeName = dataItem.placeName.toProperCase();
+        // area = dataItem.area;
+        // kmlBoundary = dataItem.kmlBoundary;
     }
 
     dataItem = zipCodeData_NoGeometry.find( x => x.zipCode === keyZipCode );
-    if (dataItem!=undefined) {
-        if (latitude=='') latitude = dataItem.latitude;
-        if (longitude=='') longitude = dataItem.longitude;
-//        if (placeName=='') placeName = dataItem.placeName;
+    if (dataItem) {
+        if (!latitude) {
+            latitude = dataItem.latitude;
+        }
+        if (!longitude) {
+            longitude = dataItem.longitude;
+        }
     }
 
-    return { "zipCode" : paddedZipCode,  
-             "commuteTime" : commuteTime, 
-             "location" : { "latitude" : latitude, "longitude":  longitude }, 
-//             "placeName" : placeName, "area" : area
-//            "kmlBoundary" : kmlBoundary 
-            };
+    return { 
+        zipCode : padZipCode(keyZipCode),
+        commuteTime : commuteTime,
+        location : {
+            latitude,
+            longitude
+        },
+        // placeName,
+        // area,
+        // kmlBoundary,
+    };
 };
 
-/**
- *  return Json strign version of commute Object based on rectangular map boundary coordinates
- */
+ /**
+  * Gets the commute detail by map bounds.
+  *
+  * @param      {<type>}  border  The border box to fetch commute data for
+  * @return     {Array}   The commute detail by map bounds.
+  */
 function getCommuteDetailByMapBounds(border)
 {  
     if (!border || !border.topRight || !border.bottomLeft
             || !border.topRight.latitude || !border.bottomLeft.latitude
-            || !border.topRight.longitude || !border.bottomLeft.longitude)
-                throw new Error(`Invalid paramter: border '${border}'` );     
+            || !border.topRight.longitude || !border.bottomLeft.longitude) {
+                throw new Error(`Invalid parameter: border '${border}'` );
+    }
   
-    var smallestLat = border.bottomLeft.latitude;
-    var smallestLng = border.bottomLeft.longitude;
-    var largestLat = border.topRight.latitude;
-    var largestLng = border.topRight.longitude;             
+    const smallestLat = border.bottomLeft.latitude;
+    const smallestLng = border.bottomLeft.longitude;
+    const largestLat = border.topRight.latitude;
+    const largestLng = border.topRight.longitude;             
 
     // Create an array that contains the string  
     // values that are in the original array.  
  
-    var foundZips1 = zipCodeData_NoGeometry.filter(  
+    const foundZips1 = zipCodeData_NoGeometry.filter(  
         function (value) {  
             return (
                    Number(value.latitude) >= Number(smallestLat) 
@@ -109,7 +121,7 @@ function getCommuteDetailByMapBounds(border)
             );  
         });
 
-    var foundZips2 = ZipCodeData_Geometry.filter(  
+    const foundZips2 = ZipCodeData_Geometry.filter(  
         function (value) {  
             return (
                     Number(value.latitude) >= Number(smallestLat) 
@@ -119,42 +131,56 @@ function getCommuteDetailByMapBounds(border)
             );  
         });
 
-    var foundZips;
-    var result = [];
+    const results = [];
     
-    foundZips = foundZips1;
-    for (var i = 0; i< foundZips.length; i++) {
-            result.push(getCommuteDetailsbyZipCode(foundZips[i].zipCode));
+    let foundZips = foundZips1;
+    for (let i = 0; i < foundZips.length; ++i) {
+            results.push(getCommuteDetailsbyZipCode(foundZips[i].zipCode));
     }
 
     foundZips = foundZips2;
-    for (var i = 0; i< foundZips.length; i++) {
-            if (!existsByZipCode(result, foundZips[i].zipCode)) {
-                result.push(getCommuteDetailsbyZipCode(foundZips[i].zipCode));
+    for (let i = 0; i < foundZips.length; ++i) {
+            if (!existsByZipCode(results, foundZips[i].zipCode)) {
+                results.push(getCommuteDetailsbyZipCode(foundZips[i].zipCode));
             }
     }
 
-    //////// ---- we shouuld probably expand the map area to make sure we get zips that cross the boundaries
+    // TODO: Expand the map area to make sure we get zips that cross the boundaries
 
-    return result;
+    return results;
 };
 
+/**
+ * Determines if zipcode is valid.
+ *
+ * @param      {<type>}   zipCode  The zip code
+ * @return     {boolean}  True if valid us zip, False otherwise.
+ */
 function isValidUSZip(zipCode) {
-    if (isNaN( Number(zipCode) )) return false;
-    if (Number(zipCode)<0 || Number(zipCode)>99999) return false   
+    if (isNaN(zipCode)) {
+        return false;
+    }
+    if (Number(zipCode) < 0 || Number(zipCode) > 99999) {
+        return false;
+    }
     return true;
 }
 
-/*
- *  take the zipCode and make sure it is normalized to lookup from commuteData 
+/**
+ * Removed any leading zeros from the zipcode
+ *
+ * @param      {string}  zipCode  The zip code
+ * @return     {string}  Zipcode without any leading zeros (For commute data file)
  */
 function trimZipCode( zipCode)
 {
     return Number(zipCode).toString(); 
 }
 
-/*
- *  Pad zipcode to '0' padded 5 digit format
+/**
+ *
+ * @param      {string}  zipCode  The zip code
+ * @return     {string}  Pad zipcode to '0' padded 5 digit format
  */
 function padZipCode(zipCode)
 {
@@ -162,19 +188,21 @@ function padZipCode(zipCode)
 }
 
 /**
- *  is the Zip Code in commuteData?
+ * Determines if zipcode exists in commute data.
+ *
+ * @param      {<type>}  data     The data
+ * @param      {string}  zipCode  The zip code
+ * @return     {bool}  True if zip code exists, False otherwise.
  */
 function existsByZipCode(data, zipCode)
 {     
-    if (indexByZipCode(data, zipCode) >= 0 )
-        return true;
-
-    return false;
+    return indexByZipCode(data, zipCode) >= 0;
 };
 
 /**
  *  is the Zip Code in commuteData?
  */
+
 function indexByZipCode(data, zipCode)
 {        
     return data.findIndex(x  => x.zipCode === zipCode);
@@ -185,7 +213,7 @@ String.prototype.toProperCase = function () {
 };
 
 /**
- * Requests crime data for a given border area from CrimeReports.com
+ * Fetched commute information for the given zipcode and border boundaries
  *
  * @param      {string}  zipcode  a single zipcode or an array of zipcodes
  * @param      {string}  border border box for the desired  area
@@ -197,28 +225,22 @@ exports.get = (zipCode, border) => {
     if ((zipCode) && (border))
         throw new Error('Cannot lookup by BOTH ZipCode And Map Border Coordinates');
 
-    var result=[];
+    const result=[];
 
-    if  (border)
-    {
+    if (border) {
         console.log(border);
-
-        result = getCommuteDetailByMapBounds(border);
-        return result;
+        return getCommuteDetailByMapBounds(border);
     }
 
-    if  (zipCode)
-    {
+    if (zipCode) {
         console.log(zipCode);
-       
         if (Array.isArray(zipCode)) {
-            for (var i = 0; i < zipCode.length; i++) {
+            for (let i = 0; i < zipCode.length; ++i) {
                 result.push(getCommuteDetailsbyZipCode(zipCode[i]));
             }
         } else {
             result.push(getCommuteDetailsbyZipCode(zipCode));
         }
-
         return result;
     }
 
