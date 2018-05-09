@@ -120,13 +120,6 @@ function getCommuteDetailByState(state)
             return (value.state.toUpperCase()==state.toUpperCase())
         });
 
-        console.log('bystate '+ state)
-
-        console.log('found1 '+ found1.length)
-        console.log('found1 '+ found1[found1.length-1].zipCode)
-        console.log('found2 '+ found2.length)
-        console.log('found2 '+ found2[found2.length-1].zipCode)
-
     const results = [];
     
     for (let i = 0; i < found1.length; ++i) {
@@ -135,13 +128,9 @@ function getCommuteDetailByState(state)
 
     for (let i = 0; i < found2.length; ++i) {
             if (!existsByZipCode(results, found2[i].zipCode)) {
-console.log(getCommuteDetailsbyZipCode(found2[i].zipCode))
                 results.push(getCommuteDetailsbyZipCode(found2[i].zipCode));
             }
     }
-
-console.log('results '+ results.length)
-console.log('results '+ results[results.length-1].zipCode)
 
     return results;
 };
@@ -149,21 +138,25 @@ console.log('results '+ results[results.length-1].zipCode)
  /**
   * Gets the commute detail by county (return all states with county match)
   *
+  * @param      {<type>}  state   The state  to fetch commute data 
+  *                                 if no state, then all states will return that match county
   * @param      {<type>}  county  The border box to fetch commute data for
   * @return     {Array}   The commute detail by map bounds.
   */
- function getCommuteDetailByCounty(county)
+ function getCommuteDetailByStateCounty(state, county)
   {
-    console.log('bycounty '+ county)
+    if (state && state.length != 2)
+        throw new Error(`Invalid parameter: state '${state}'` );     
 
-  //Default all consts to default state
-  const found1 = zipCodeData_NoGeometry.filter(  
-    function (value) {  
-        return (value.county.toUpperCase()==county.toUpperCase())
-    });
-
-    console.log('found1 '+ found1.length)
-    console.log('found1 '+ found1[found1.length-1].zipCode)
+    //Default all consts to default state
+    const found1 = zipCodeData_NoGeometry.filter(  
+       function (value) {
+            if (state)
+               return (value.county.toUpperCase()==county.toUpperCase()
+                    && value.state.toUpperCase()==state.toUpperCase())
+            else         
+                return (value.county.toUpperCase()==county.toUpperCase())
+       });
 
     const results = [];
 
@@ -171,61 +164,10 @@ console.log('results '+ results[results.length-1].zipCode)
         results.push(getCommuteDetailsbyZipCode(found1[i].zipCode));
     }
 
-    console.log('results '+ results.length)
-    console.log('results '+ results[results.length-1].zipCode)
-
     return results;
 };
 
- /**
-  * Gets the commute detail by state and county
-  *
-  * @param      {<type>}  state  The border box to fetch commute data for
-  * @param      {<type>}  county  The border box to fetch commute data for
-  * @return     {Array}   The commute detail by map bounds.
-  */
- function getCommuteDetailByStateCounty(state, county)
-  {
-    console.log('byStatecounty '+ state + ' ' + county)
-
-  //Default all consts to default state
-  const found1 = zipCodeData_NoGeometry.filter(  
-    function (value) {  
-        return (value.county.toUpperCase()==county.toUpperCase()
-                    && value.state.toUpperCase()==state.toUpperCase())
-    });
-
-const found2 = ZipCodeData_Geometry.filter(  
-    function (value) {  
-        return (value.county.toUpperCase()==county.toUpperCase()
-            && value.state.toUpperCase()==state.toUpperCase())
-    });
-
-    console.log('found1 '+ found1.length)
-    console.log('found1 '+ found1[found1.length-1].zipCode)
-    console.log('found2 '+ found2.length)
-    console.log('found2 '+ found2[found2.length-1].zipCode)
-
-    const results = [];
-
-    for (let i = 0; i < found1.length; ++i) {
-            results.push(getCommuteDetailsbyZipCode(found1[i].zipCode));
-    }
-
-    for (let i = 0; i < found2.length; ++i) {
-            if (!existsByZipCode(results, found2[i].zipCode)) {
-    console.log(getCommuteDetailsbyZipCode(found2[i].zipCode))
-                results.push(getCommuteDetailsbyZipCode(found2[i].zipCode));
-            }
-    }
-
-    console.log('results '+ results.length)
-    console.log('results '+ results[results.length-1].zipCode)
-
-    return results;
-};
-
- /**
+/**
   * Gets the commute detail by map bounds.
   *
   * @param      {<type>}  border  The border box to fetch commute data for
@@ -353,21 +295,18 @@ String.prototype.toProperCase = function () {
  *
  * @param      {string}  zipcode  a single zipcode or an array of zipcodes
  * @param      {string}  border border box for the desired  area
+ * @param      {string}  state state  for the desired area (if no county, then all counties included)
+ * @param      {string}  county county for the desired  area (if no state, then all states included)
+ * 
  * @return     {CommuteDetails[]} A list of objects containing commute details for the zipcode(s)
  */
 exports.get = (zipCode, border, state, county) => {
     console.log('Commute get');
 
-
-    console.log('zipCode ' + zipCode);
-    console.log('zipCode ' + border);
-    console.log('zipCode ' + state);
-    console.log('zipCode ' + county);
-
     let methods=0
     if (zipCode) methods++; if (border) methods++; if (state || county) methods++; 
     if (methods>1)
-        throw new Error('Cannot lookup by multple methods');
+        throw new Error('Cannot lookup by multple methods. Must be [zipCode] or [border] or [state, county]');
 
     const result=[];
 
@@ -388,17 +327,15 @@ exports.get = (zipCode, border, state, county) => {
         return result;
     }
 
+    if (county) {
+        console.log(state);
+        console.log(county);
+        return getCommuteDetailByStateCounty(state, county);
+    }
+
     if (state) {
         console.log(state);
         return getCommuteDetailByState(state);
     }
-
-    if (county) {
-        console.log(county);
-        return getCommuteDetailByCounty(county);
-    }
-
-
-
     throw new Error('No Lookup criteria provided');
 };
