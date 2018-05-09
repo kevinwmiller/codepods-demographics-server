@@ -43,7 +43,6 @@ function getCommuteDetailsbyZipCode(zipCode)
     if (!isValidUSZip(zipCode))
         throw new Error(`Invalid parameter: zipCode '${zipCode}'` );     
 
-    // const keyZipCode = normalizeZipCode(zipCode);
     const keyZipCode = trimZipCode(zipCode);
 
     //Default all consts to default state
@@ -96,6 +95,134 @@ function getCommuteDetailsbyZipCode(zipCode)
         // area,
         // kmlBoundary,
     };
+};
+
+
+ /**
+  * Gets the commute detail by state
+  *
+  * @param      {<type>}  state  The border box to fetch commute data for
+  * @return     {Array}   The commute detail by map bounds.
+  */
+function getCommuteDetailByState(state)
+{    
+    if (state.length != 2)
+        throw new Error(`Invalid parameter: state '${state}'` );     
+
+    //Default all consts to default state
+    const found1 = zipCodeData_NoGeometry.filter(  
+        function (value) {  
+            return (value.state.toUpperCase()==state.toUpperCase())
+        });
+
+    const found2 = ZipCodeData_Geometry.filter(  
+        function (value) {  
+            return (value.state.toUpperCase()==state.toUpperCase())
+        });
+
+        console.log('bystate '+ state)
+
+        console.log('found1 '+ found1.length)
+        console.log('found1 '+ found1[found1.length-1].zipCode)
+        console.log('found2 '+ found2.length)
+        console.log('found2 '+ found2[found2.length-1].zipCode)
+
+    const results = [];
+    
+    for (let i = 0; i < found1.length; ++i) {
+            results.push(getCommuteDetailsbyZipCode(found1[i].zipCode));
+    }
+
+    for (let i = 0; i < found2.length; ++i) {
+            if (!existsByZipCode(results, found2[i].zipCode)) {
+console.log(getCommuteDetailsbyZipCode(found2[i].zipCode))
+                results.push(getCommuteDetailsbyZipCode(found2[i].zipCode));
+            }
+    }
+
+console.log('results '+ results.length)
+console.log('results '+ results[results.length-1].zipCode)
+
+    return results;
+};
+
+ /**
+  * Gets the commute detail by county (return all states with county match)
+  *
+  * @param      {<type>}  county  The border box to fetch commute data for
+  * @return     {Array}   The commute detail by map bounds.
+  */
+ function getCommuteDetailByCounty(county)
+  {
+    console.log('bycounty '+ county)
+
+  //Default all consts to default state
+  const found1 = zipCodeData_NoGeometry.filter(  
+    function (value) {  
+        return (value.county.toUpperCase()==county.toUpperCase())
+    });
+
+    console.log('found1 '+ found1.length)
+    console.log('found1 '+ found1[found1.length-1].zipCode)
+
+    const results = [];
+
+    for (let i = 0; i < found1.length; ++i) {
+        results.push(getCommuteDetailsbyZipCode(found1[i].zipCode));
+    }
+
+    console.log('results '+ results.length)
+    console.log('results '+ results[results.length-1].zipCode)
+
+    return results;
+};
+
+ /**
+  * Gets the commute detail by state and county
+  *
+  * @param      {<type>}  state  The border box to fetch commute data for
+  * @param      {<type>}  county  The border box to fetch commute data for
+  * @return     {Array}   The commute detail by map bounds.
+  */
+ function getCommuteDetailByStateCounty(state, county)
+  {
+    console.log('byStatecounty '+ state + ' ' + county)
+
+  //Default all consts to default state
+  const found1 = zipCodeData_NoGeometry.filter(  
+    function (value) {  
+        return (value.county.toUpperCase()==county.toUpperCase()
+                    && value.state.toUpperCase()==state.toUpperCase())
+    });
+
+const found2 = ZipCodeData_Geometry.filter(  
+    function (value) {  
+        return (value.county.toUpperCase()==county.toUpperCase()
+            && value.state.toUpperCase()==state.toUpperCase())
+    });
+
+    console.log('found1 '+ found1.length)
+    console.log('found1 '+ found1[found1.length-1].zipCode)
+    console.log('found2 '+ found2.length)
+    console.log('found2 '+ found2[found2.length-1].zipCode)
+
+    const results = [];
+
+    for (let i = 0; i < found1.length; ++i) {
+            results.push(getCommuteDetailsbyZipCode(found1[i].zipCode));
+    }
+
+    for (let i = 0; i < found2.length; ++i) {
+            if (!existsByZipCode(results, found2[i].zipCode)) {
+    console.log(getCommuteDetailsbyZipCode(found2[i].zipCode))
+                results.push(getCommuteDetailsbyZipCode(found2[i].zipCode));
+            }
+    }
+
+    console.log('results '+ results.length)
+    console.log('results '+ results[results.length-1].zipCode)
+
+    return results;
 };
 
  /**
@@ -228,11 +355,19 @@ String.prototype.toProperCase = function () {
  * @param      {string}  border border box for the desired  area
  * @return     {CommuteDetails[]} A list of objects containing commute details for the zipcode(s)
  */
-exports.get = (zipCode, border) => {
+exports.get = (zipCode, border, state, county) => {
     console.log('Commute get');
 
-    if ((zipCode) && (border))
-        throw new Error('Cannot lookup by BOTH ZipCode And Map Border Coordinates');
+
+    console.log('zipCode ' + zipCode);
+    console.log('zipCode ' + border);
+    console.log('zipCode ' + state);
+    console.log('zipCode ' + county);
+
+    let methods=0
+    if (zipCode) methods++; if (border) methods++; if (state || county) methods++; 
+    if (methods>1)
+        throw new Error('Cannot lookup by multple methods');
 
     const result=[];
 
@@ -252,6 +387,18 @@ exports.get = (zipCode, border) => {
         }
         return result;
     }
+
+    if (state) {
+        console.log(state);
+        return getCommuteDetailByState(state);
+    }
+
+    if (county) {
+        console.log(county);
+        return getCommuteDetailByCounty(county);
+    }
+
+
 
     throw new Error('No Lookup criteria provided');
 };
