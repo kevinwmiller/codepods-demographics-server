@@ -31,6 +31,7 @@ const zipCodeData_NoGeometry = require('../modeldata/zipCodeData_CensusGov');
 
 const ZipCodeData_Geometry = require('../modeldata/zipCodeData_GeoCommons');
 
+var includeKML = false;
 
 /**
  * Gets the commute details by zip code.
@@ -53,7 +54,7 @@ function getCommuteDetailsbyZipCode(zipCode)
     let county='';
     // let placeName = '';
     // let area = '';
-    // let kmlBoundary = '';
+    let kmlBoundary = '';
  
     let dataItem = commuteData.find( x => x.zipCode === keyZipCode );
     commuteTime = (dataItem) ? dataItem.commuteTimeMinsEst : '';
@@ -65,7 +66,8 @@ function getCommuteDetailsbyZipCode(zipCode)
         state = dataItem.state;
         // placeName = dataItem.placeName.toProperCase();
         // area = dataItem.area;
-        // kmlBoundary = dataItem.kmlBoundary;
+        if (includeKML=='true' || includeKML==true)
+            kmlBoundary = dataItem.kmlBoundary;
     }
 
     dataItem = zipCodeData_NoGeometry.find( x => x.zipCode === keyZipCode );
@@ -82,6 +84,7 @@ function getCommuteDetailsbyZipCode(zipCode)
         county = dataItem.county;
     }
 
+
     return { 
         zipCode : padZipCode(keyZipCode),
         commuteTime : commuteTime,
@@ -93,7 +96,7 @@ function getCommuteDetailsbyZipCode(zipCode)
         county : county,
         // placeName,
         // area,
-        // kmlBoundary,
+        kmlBoundary : kmlBoundary
     };
 };
 
@@ -297,16 +300,21 @@ String.prototype.toProperCase = function () {
  * @param      {string}  border border box for the desired  area
  * @param      {string}  state state  for the desired area (if no county, then all counties included)
  * @param      {string}  county county for the desired  area (if no state, then all states included)
+ * @param      {string}  optionKML include kml data if true
  * 
  * @return     {CommuteDetails[]} A list of objects containing commute details for the zipcode(s)
  */
-exports.get = (zipCode, border, state, county) => {
+exports.get = (zipCode, border, state, county, optionKML) => {
     console.log('Commute get');
+
 
     let methods=0
     if (zipCode) methods++; if (border) methods++; if (state || county) methods++; 
     if (methods>1)
         throw new Error('Cannot lookup by multple methods. Must be [zipCode] or [border] or [state, county]');
+
+    console.log(optionKML)
+    includeKML = optionKML
 
     const result=[];
 

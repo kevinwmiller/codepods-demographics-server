@@ -16,7 +16,7 @@ const commuteModel = require('../models/commuteModel');
 */
 router.get('/', async (req, res) => {
     try {
-        res.json({ response: await commuteModel.get(req.query.zipCode, req.query.border, req.query.state, req.query.county) });
+        res.json({ response: await commuteModel.get(req.query.zipCode, req.query.border, req.query.state, req.query.county, req.query.optionKML) });
     } catch (err) {
         console.log(`${err.message}`);
         res.sendStatus(422);
