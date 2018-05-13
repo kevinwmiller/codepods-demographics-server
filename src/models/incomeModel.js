@@ -6,16 +6,16 @@
     @property   {string} name of the county the income applies to
     @property   {string} most recent income for the given county
 */
-
+const geoJSON = require('geojson');
 const incomeReports = require('../apis/incomeReports') ;
 
-const countyDataGeometry = require('../modeldata/Maryland_Counties_CensusGov.geojson')
+const countyDataGeometry = require('../modeldata/Maryland_Counties_CensusGov.geojson');
 
 
-function getIncomeByCounty(countyName) => {
+function getIncomeByCounty(countyName) {
    incomeReports.fetchIncomeData(countyName);
 }
-function getIncomeByMapBounds() => {
+function getIncomeByMapBounds(border)  {
     if (!border || !border.topRight || !border.bottomLeft
             || !border.topRight.latitude || !border.bottomLeft.latitude
             || !border.topRight.longitude || !border.bottomLeft.longitude) {
@@ -25,12 +25,13 @@ function getIncomeByMapBounds() => {
     const smallestLng = border.bottomLeft.longitude;
     const largestLat = border.topRight.latitude;
     const largestLng = border.topRight.longitude;
-
+    
     // Create an array that contains the string  
     // values that are in the original array.  
 
     const foundCounty1 = countyDataGeometry.filter(
         function (value) {
+	    console.log(value);
             return (
                    Number(value.latitude) >= Number(smallestLat)
                 && Number(value.latitude) <= Number(largestLat)
@@ -39,6 +40,7 @@ function getIncomeByMapBounds() => {
             );
         });
     const results = [];
+    console.log(border);
     let foundCounty = foundCounty1;
     for (let i = 0; i < foundCounty.length; ++i) {
         results.push(getIncomeByCounty(foundCounty[i].NAME));
@@ -51,7 +53,9 @@ function getIncomeByMapBounds() => {
     @param  {string} countyName     Name of the county the annual income applies to
     @return {IncomeDetails[]}       List of objects containing county location and recent annual income 
  */
-exports.get = (countyName) => {
+exports.get = (border) => {
+    throw new Error(`console.log("Income exports.get(border): ");`);
+    console.log(border);
     console.log(countyName) ; 
     if (!countyName) {
         throw new Error(`Invalid parameters. No county specified`);
