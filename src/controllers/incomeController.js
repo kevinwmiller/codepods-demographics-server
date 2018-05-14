@@ -16,7 +16,8 @@ const incomeModel = require('../models/incomeModel') ;
 */
 router.get('/' , async (req , res) => {
     try {
-        res.json({ response: await incomeModel.get(req.query.county)});
+        console.log(req.query.border);
+        res.json({ response: await incomeModel.get(req.query.border)});
     } catch (err) {
         console.log(`${err.message}`) ;
         res.sendStatus(422) ;

@@ -6,16 +6,16 @@
     @property   {string} name of the county the income applies to
     @property   {string} most recent income for the given county
 */
-const geoJSON = require('geojson');
+
 const incomeReports = require('../apis/incomeReports') ;
+const countyGeometry = require('../modeldata/maryss');
 
-const countyDataGeometry = require('../modeldata/Maryland_Counties_CensusGov.geojson');
-
-
-function getIncomeByCounty(countyName) {
-   incomeReports.fetchIncomeData(countyName);
+function getIncome(income, countyName) {
+   const result = {};
+   result[countyName]=income[countyName];
+   return result;
 }
-function getIncomeByMapBounds(border)  {
+function getCountyByMapBounds(border)  {
     if (!border || !border.topRight || !border.bottomLeft
             || !border.topRight.latitude || !border.bottomLeft.latitude
             || !border.topRight.longitude || !border.bottomLeft.longitude) {
@@ -25,27 +25,53 @@ function getIncomeByMapBounds(border)  {
     const smallestLng = border.bottomLeft.longitude;
     const largestLat = border.topRight.latitude;
     const largestLng = border.topRight.longitude;
-    
-    // Create an array that contains the string  
-    // values that are in the original array.  
-
-    const foundCounty1 = countyDataGeometry.filter(
+    const foundCounty1 = countyGeometry.filter(
         function (value) {
-	    console.log(value);
-            return (
-                   Number(value.latitude) >= Number(smallestLat)
-                && Number(value.latitude) <= Number(largestLat)
-                && Number(value.longitude) >= Number(smallestLng)
-                && Number(value.longitude) <= Number(largestLng)
-            );
+            if(value.geometry.type==='Polygon'){
+                for(let i = 0; i < value.geometry.coordinates[0].length; ++i){
+                    let longitude = value.geometry.coordinates[0][i][0];
+                    let latitude = value.geometry.coordinates[0][i][1];
+
+                    if (latitude > smallestLat &&
+                       latitude < largestLat &&
+                       longitude > smallestLng &&
+                       longitude < largestLng) {
+                        return value;
+		    }
+                }
+
+	    }
+            else if (value.geometry.type==='GeometryCollection')
+            {
+		for(let i = 0; i < value.geometry.geometries.length;++i) {
+                    
+	            for(let j = 0; j < value.geometry.geometries[i].length;++j){
+                        let longitude = value.geometry.geometries[i].coordinates[0][j][0];
+                        let latitude = value.geometry.geometries[i].coordinates[0][j][1];
+
+                        if (latitude > smallestLat
+                           && latitude < largestLat
+			   && longitude > smallestLng
+                           && longitude < largestLng){
+				return value;
+			}
+                    }
+		}
+            }
+            else {
+                return null; 
+	    }
         });
-    const results = [];
-    console.log(border);
+	
+	
+    const counties = [];
     let foundCounty = foundCounty1;
     for (let i = 0; i < foundCounty.length; ++i) {
-        results.push(getIncomeByCounty(foundCounty[i].NAME));
+        //results.push(getIncomeByCounty(foundCounty[i].countyName));
+	counties.push(foundCounty[i].countyName);
     }
-    return results;
+    
+    return counties;
 }
 /**
     Requests income data for a given county from data.gov
@@ -54,11 +80,21 @@ function getIncomeByMapBounds(border)  {
     @return {IncomeDetails[]}       List of objects containing county location and recent annual income 
  */
 exports.get = (border) => {
-    throw new Error(`console.log("Income exports.get(border): ");`);
-    console.log(border);
-    console.log(countyName) ; 
-    if (!countyName) {
-        throw new Error(`Invalid parameters. No county specified`);
+    if (!border) {
+        throw new Error(`Invalid parameters. No border specified`);
     }
-    return incomeReports.getIncome(countyName) ;
-}
+    const income = incomeReports.fetchIncomeData();
+    console.log(border);
+    console.log("in income");
+    let counties = getCountyByMapBounds(border);
+    console.log("counties: " + counties);
+    console.log("income: " + income);
+    const results = [];
+    for (let i = 0; i < counties.length; ++i) {
+        results.push(getIncome(income, counties[i]));
+    }
+    console.log("number: " + income[0]["allegany_county"]);
+    console.log(results);
+    return results;
+};
+

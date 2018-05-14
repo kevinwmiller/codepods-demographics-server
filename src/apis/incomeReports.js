@@ -11,8 +11,8 @@
 
 const axios = require('axios') ;
 
-const URL = 'https://data.maryland.gov/api/views/nv7y-8663';
-
+//const URL = 'https://data.maryland.gov/api/views/nv7y-8663';
+const URL = 'https://data.maryland.gov/resource/as5f-bu5b.json';
 /**
 *  @class  IncomeReports (name)
 */
@@ -24,8 +24,13 @@ class IncomeReports
     *  @param  {string}    countyName  Name of the county the annual income applies to
     *  @return {IncomeDetails[]}       List of objects containing county location and recent annual income 
     */
-    async fetchIncomeData(countyName) {
-        const response = await axios.get(URL);
+    async fetchIncomeData() {
+        const params = {
+            params: {
+                year: '2015',
+	    },
+	};
+        const response = await axios.get(URL,params);
         let incomeData = response.data;
         console.log(incomeData);
         return incomeData;
