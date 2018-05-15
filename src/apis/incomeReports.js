@@ -42,9 +42,9 @@ class IncomeReports
     *  @param  {string}    countyName  Name of the county the annual income applies to
     *  @return {IncomeDetails[]}       List of objects containing county location and recent annual income 
     */
-    async getIncome(countyName) {
+    async getIncome() {
         try {
-            return await this.fetchIncomeData(countyName);
+            return await this.fetchIncomeData();
         } catch (err) {
             return { error: err } ;
         }
