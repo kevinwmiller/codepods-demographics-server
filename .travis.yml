@@ -1,7 +1,6 @@
 language: node_js
 node_js:
-- node
-- 8
+- 9
 branches:
   only:
   - production
@@ -13,7 +12,8 @@ notifications:
 deploy:
   provider: heroku
   api_key:
-    secure: q7V4OFu+pIrEQxK3e/tIxDNqPTYIse0FqouGVH+ap+tr2uQBW4wADvQZOqJcFVwfB8NKQlx/+pxs3fAxA+HObaE70iuedG/RiCsNj2lnAnY1KadM+Ge8shAaOICxH02UC+Lao0Q7SGsY4F6ZqjCZzKMY+HqsQDFivwJ7vzuZKmpn014ZmQH43gpnLLX6EZMoSNUr5dJtDL3VL3t6qFz+fXeZ1mzrghEqVF1Dxt1ZoA0DGScrrITeGl5rIYEDaZe0PxCWun9fz9QW8YxNX3YFn16xIFtPkFPyieY/VtwGM9sKrAHPgF1zTu7LaWRk3ed9shGBvWK5uvqbFd4aNh3AYnJ/62jLHS5LLtrMbTApjxoIZODFWykRchnZ30/h4upmFR3LDytFnH9ueNcb2ulfFv4DLFG2vrdMggdxFrngNgAKPLX+vUpJ7nFikWXGtJredc1es0AOFrJHKoSejpEfAxRggCEgv0evmKM7HlHdgDF1TdDPVmEwVxCv4NmQ5Cdw8/41RPzlzD75EKSD3X49ctVKi/ZCA7o0BezkC87ZT5gXwB1IW8o8MksLkwgwpZS+e6xgUUdvpGKxxjc0aWW+xBJIUrjjYndhQCbTbX1sej3NkoAocftHVd8sGT2UzEPhPI4CLP4nEYHFyPy1lFNbZuJ+HsZymE1VvvYFdXwU8/g=
-  app: 
+    secure: iFLp8/lyNmipSqnBs0TqYasbSXwCW2pN/o4drh9odfNyCizgtWQad/yUKCHoyAtwyrfRCK0EP+Vv49fvQP6nJBNGpSmvRqjo6vtaZHE458V40bpFqndrBjugOUFKLPymrIYgiZ1Iy9a+x2H+2kg319vIkUMrN0gE9OmgddNT6UfZBqxyj7viJJ2ZbbM4AKdP2lM1jWd+2Lp2v0xopVFmxBmsw1h4i/PKpLPN+TQgfvKqNxxzcK3ZQHnxRaCIoBZxe8+arYUMcXjbWg+JyiMOhmyPLELKjbsgWNeOivmDmGV/55S/fnasGaHRQGGXqbYEWBcTUxGcA2JaQZW3U8aoipJiF3FMOreVy58PePHv/sS9BHW3a4Tu6hsl1BD2JagOm/OyXv+26UPIdzOcGX5TGhbOCVXLWWxsrhvMuQNPq0SNGBKLQ/65uDUkflPrQyoHg5CA64y/oaNWi7qIImhm9HuMk4SkO7m4/XKbwEsEhMcNHexUy4cfxcJ/tUDsNX52/p5d7/ZX3QpmN+fRsEOEJCGF8U5AHLeFCdBGdlpKBBg82D4A/bwVuXeckE5PObnFRz/JINsLcfX5la8ohpLZhGWZArWKKK6pPGsTMbFMmB09W+b5ENzUeMIVRgUqZSSnzeLePqrg4IQ9JEL/lsNmA2k/k/wwo2Yhfds+Em2p6ng=
+  app:
+    development: dev-codepodsapi
     master: staging-codepodsapi
     production: codepodsapi

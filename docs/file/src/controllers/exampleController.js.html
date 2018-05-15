@@ -29,20 +29,37 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#controllers">controllers</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-example">example</a></span></span></li>
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#apis">apis</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DAYS">DAYS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-INCIDENT_TYPES">INCIDENT_TYPES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-URL">URL</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-axios">axios</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-cr">cr</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-endDate">endDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-startDate">startDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Coordinate">Coordinate</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#controllers">controllers</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-crimeModel">crimeModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-express">express</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-router">router</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-exampleModel">exampleModel</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-express">express</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-router">router</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-express">express</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-router">router</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#models">models</a><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ExampleJsonObject">ExampleJsonObject</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#models">models</a><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Border">Border</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ExampleJsonObject">ExampleJsonObject</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#test-apis">test/apis</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-chai">chai</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-chaiHttp">chaiHttp</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-crimeReports">crimeReports</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-moment">moment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-should">should</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/controllers/exampleController.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
-    @module ExampleController
-    @exports ExampleController
+    @module Example
+    @exports Example
     @file Example controller code
         Uses ExampleModel
 */
@@ -50,15 +67,79 @@ const express = require(&apos;express&apos;);
 
 const router = express.Router();
 
-const example = require(&apos;../models/exampleModel&apos;);
+const exampleModel = require(&apos;../models/exampleModel&apos;);
 
 /**
-    Creates a route for /exampleController
+    Create
+    @returns {object} @see {@link ExampleModel}
+*/
+router.post(&apos;/&apos;, async (req, res) =&gt; {
+    try {
+        res.json({ response: await exampleModel.create(req.body.firstName, req.body.lastName) });
+    } catch (err) {
+        res.json({ error: err.message });
+    }
+});
+
+/**
+    Get all
     @returns {object} @see {@link ExampleModel}
 */
 router.get(&apos;/&apos;, async (req, res) =&gt; {
-    res.json({ response: await example.get() });
+    // req.query will contain query string parameters
+    // i.e. /example?firstName=John&amp;lastName=Doe will populate req.query.firstName with &apos;John&apos;
+    // and req.query.lastName with &apos;Doe&apos;
+    // req.params.firstName will contains &apos;John&apos; since it is a part of our route parameters
+    try {
+        res.json({ response: await exampleModel.getAll(req.query) });
+    } catch (err) {
+        res.json({ error: err.message });
+    }
 });
+
+/**
+    Get specific
+    @returns {object} @see {@link ExampleModel}
+*/
+router.get(&apos;/:id&apos;, async (req, res) =&gt; {
+    // req.params will contain the given id
+    // req.query will contain query string parameters
+    // i.e. /example/5aa44da6b5a3087224a8029c?firstName=John&amp;lastName=Doe will populate req.query.firstName with &apos;John&apos;
+    // and req.query.lastName with &apos;Doe&apos;
+    // req.params.id will contain &apos;5aa44da6b5a3087224a8029c&apos;
+    try {
+        res.json({ response: await exampleModel.get(req.params.id) });
+    } catch (err) {
+        res.json({ error: err.message });
+    }
+});
+
+/**
+    Uupdate
+    @returns {object} @see {@link ExampleModel}
+*/
+router.patch(&apos;/:id&apos;, async (req, res) =&gt; {
+    // req.body will contains key/value pairs contained in the page body.
+    // Usually only needed when a post request is received
+    try {
+        res.json({ response: await exampleModel.update(req.body.firstName, req.body.lastName) });
+    } catch (err) {
+        res.json({ error: err.message });
+    }
+});
+
+/**
+    Delete
+    @returns {object} @see {@link ExampleModel}
+*/
+router.delete(&apos;/:id&apos;, async (req, res) =&gt; {
+    try {
+        res.json({ response: await exampleModel.delete(req.body.firstName, req.body.lastName) });
+    } catch (err) {
+        res.json({ error: err.message });
+    }
+});
+
 
 module.exports = router;
 </code></pre>

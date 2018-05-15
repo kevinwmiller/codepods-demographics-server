@@ -45,7 +45,7 @@
             - Create a new example resource
         - HTTP GET /example/{id}
             - Get a specific example resource
-        - HTTP PUT /example/{id}
+        - HTTP PATCH /example/{id}
             - Update a specific example resource
         - HTTP DELETE /example/{id}
             - Delete a specific example resource
