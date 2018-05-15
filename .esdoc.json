@@ -13,5 +13,5 @@
         }
     }
   ],
-  "includes": ["./*.js", "controllers/*.js", "models/*.js", "test/*.js"]
+  "includes": ["./*.js", "apis/*.js", "controllers/*.js", "models/*.js", "test/*.js"]
 }

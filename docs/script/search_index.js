@@ -1,8 +1,74 @@
 window.esdocSearchIndex = [
   [
-    "codepods-demographics-server/src/controllers/examplecontroller.js~example",
-    "variable/index.html#static-variable-example",
-    "<span>example</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/controllers/exampleController.js</span>",
+    "codepods-demographics-server/src/apis/crimereports.js~days",
+    "variable/index.html#static-variable-DAYS",
+    "<span>DAYS</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/apis/crimeReports.js</span>",
+    "variable"
+  ],
+  [
+    "codepods-demographics-server/src/apis/crimereports.js~incident_types",
+    "variable/index.html#static-variable-INCIDENT_TYPES",
+    "<span>INCIDENT_TYPES</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/apis/crimeReports.js</span>",
+    "variable"
+  ],
+  [
+    "codepods-demographics-server/src/apis/crimereports.js~url",
+    "variable/index.html#static-variable-URL",
+    "<span>URL</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/apis/crimeReports.js</span>",
+    "variable"
+  ],
+  [
+    "codepods-demographics-server/src/apis/crimereports.js~axios",
+    "variable/index.html#static-variable-axios",
+    "<span>axios</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/apis/crimeReports.js</span>",
+    "variable"
+  ],
+  [
+    "codepods-demographics-server/src/test/apis/crimereports_test.js~chai",
+    "variable/index.html#static-variable-chai",
+    "<span>chai</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/test/apis/crimeReports_test.js</span>",
+    "variable"
+  ],
+  [
+    "codepods-demographics-server/src/test/apis/crimereports_test.js~chaihttp",
+    "variable/index.html#static-variable-chaiHttp",
+    "<span>chaiHttp</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/test/apis/crimeReports_test.js</span>",
+    "variable"
+  ],
+  [
+    "codepods-demographics-server/src/apis/test.js~cr",
+    "variable/index.html#static-variable-cr",
+    "<span>cr</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/apis/test.js</span>",
+    "variable"
+  ],
+  [
+    "codepods-demographics-server/src/controllers/crimecontroller.js~crimemodel",
+    "variable/index.html#static-variable-crimeModel",
+    "<span>crimeModel</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/controllers/crimeController.js</span>",
+    "variable"
+  ],
+  [
+    "codepods-demographics-server/src/test/apis/crimereports_test.js~crimereports",
+    "variable/index.html#static-variable-crimeReports",
+    "<span>crimeReports</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/test/apis/crimeReports_test.js</span>",
+    "variable"
+  ],
+  [
+    "codepods-demographics-server/src/apis/test.js~enddate",
+    "variable/index.html#static-variable-endDate",
+    "<span>endDate</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/apis/test.js</span>",
+    "variable"
+  ],
+  [
+    "codepods-demographics-server/src/controllers/examplecontroller.js~examplemodel",
+    "variable/index.html#static-variable-exampleModel",
+    "<span>exampleModel</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/controllers/exampleController.js</span>",
+    "variable"
+  ],
+  [
+    "codepods-demographics-server/src/controllers/crimecontroller.js~express",
+    "variable/index.html#static-variable-express",
+    "<span>express</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/controllers/crimeController.js</span>",
     "variable"
   ],
   [
@@ -18,6 +84,18 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "codepods-demographics-server/src/test/apis/crimereports_test.js~moment",
+    "variable/index.html#static-variable-moment",
+    "<span>moment</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/test/apis/crimeReports_test.js</span>",
+    "variable"
+  ],
+  [
+    "codepods-demographics-server/src/controllers/crimecontroller.js~router",
+    "variable/index.html#static-variable-router",
+    "<span>router</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/controllers/crimeController.js</span>",
+    "variable"
+  ],
+  [
     "codepods-demographics-server/src/controllers/examplecontroller.js~router",
     "variable/index.html#static-variable-router",
     "<span>router</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/controllers/exampleController.js</span>",
@@ -27,6 +105,18 @@ window.esdocSearchIndex = [
     "codepods-demographics-server/src/controllers/index.js~router",
     "variable/index.html#static-variable-router",
     "<span>router</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/controllers/index.js</span>",
+    "variable"
+  ],
+  [
+    "codepods-demographics-server/src/test/apis/crimereports_test.js~should",
+    "variable/index.html#static-variable-should",
+    "<span>should</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/test/apis/crimeReports_test.js</span>",
+    "variable"
+  ],
+  [
+    "codepods-demographics-server/src/apis/test.js~startdate",
+    "variable/index.html#static-variable-startDate",
+    "<span>startDate</span> <span class=\"search-result-import-path\">codepods-demographics-server/src/apis/test.js</span>",
     "variable"
   ],
   [
@@ -312,6 +402,30 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "src/apis/crimereports.js",
+    "file/src/apis/crimeReports.js.html",
+    "src/apis/crimeReports.js",
+    "file"
+  ],
+  [
+    "src/apis/crimereports.js~coordinate",
+    "typedef/index.html#static-typedef-Coordinate",
+    "src/apis/crimeReports.js~Coordinate",
+    "typedef"
+  ],
+  [
+    "src/apis/test.js",
+    "file/src/apis/test.js.html",
+    "src/apis/test.js",
+    "file"
+  ],
+  [
+    "src/controllers/crimecontroller.js",
+    "file/src/controllers/crimeController.js.html",
+    "src/controllers/crimeController.js",
+    "file"
+  ],
+  [
     "src/controllers/examplecontroller.js",
     "file/src/controllers/exampleController.js.html",
     "src/controllers/exampleController.js",
@@ -324,6 +438,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/models/crimemodel.js",
+    "file/src/models/crimeModel.js.html",
+    "src/models/crimeModel.js",
+    "file"
+  ],
+  [
+    "src/models/crimemodel.js~border",
+    "typedef/index.html#static-typedef-Border",
+    "src/models/crimeModel.js~Border",
+    "typedef"
+  ],
+  [
     "src/models/examplemodel.js",
     "file/src/models/exampleModel.js.html",
     "src/models/exampleModel.js",
@@ -334,6 +460,12 @@ window.esdocSearchIndex = [
     "typedef/index.html#static-typedef-ExampleJsonObject",
     "src/models/exampleModel.js~ExampleJsonObject",
     "typedef"
+  ],
+  [
+    "src/test/apis/crimereports_test.js",
+    "file/src/test/apis/crimeReports_test.js.html",
+    "src/test/apis/crimeReports_test.js",
+    "file"
   ],
   [
     "src/test/controllers/testexamplecontroller.js",
