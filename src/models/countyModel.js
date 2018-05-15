@@ -79,7 +79,32 @@ exports.get = (border) => {
     }
     console.log(border);
     console.log("in county");
-    const counties = getCountyByMapBounds(border);
+    //const counties = getCountyByMapBounds(border);
+    const counties = [
+	    'allegany_county',
+	    'anne_arundel_county',
+	    'baltimore_county',
+            'baltimore_city',
+            'calvert_county',
+            'caroline_county',
+	    'carroll_county',
+	    'cecil_county',
+	    'charles_county',
+	    'dorchester_county',
+	    'frederick_county',
+	    'garrett_county',
+	    'harford_county',
+	    'howard_county',
+	    'kent_county',
+	    'montgomery_county',
+	    'prince_george_s_county',
+	    'queen_anne_s_county',
+	    'st_mary_s_county',
+	    'somerset_county',
+	    'talbot_county',
+	    'washington_county',
+	    'worcester_county',
+    ]
     console.log("counties: " + counties);
     return counties;
 };
